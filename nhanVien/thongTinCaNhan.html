@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quyển Lịch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f4f4f4;
+            height: 100vh;
+        }
+
+        header {
+            background-color: white;
+            width: 100%;
+            height: 10%;
+            padding: 0px 20px;
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            height: 100%;
+            width: auto;
+            padding-right: 15px;
+        }
+
+        .menu {
+            height: 100%;
+            align-items: center;
+        }
+
+        .right-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .icon-container {
+            width: 40px;
+            height: 40px;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            margin-left: 20px;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background-color: white;
+            width: 200px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .dropdown-menu li {
+            list-style: none;
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .dropdown-menu li:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-menu li:hover {
+            background-color: #f0f0f0;
+        }
+
+        .left-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .left-container div {
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .left-container div:hover {
+            background-color: #7ad3ff;
+        }
+
+        .formthongtin {
+            width: 705px;
+            padding: 20px;
+            position: fixed;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+
+        .formthongtin h3 {
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+            padding-bottom: 30px;
+        }
+
+        .formflex {
+            display: flex;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group label {
+            width: 116px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .btluu {
+            width: 100%;
+            padding: 10px;
+            background-color: blue;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="left-container">
+            <a href="index.html" class="logo"><img src="j97.jpg" class="logo"></a>
+            <div><a href="index.html" style="text-decoration: none; color: #000;">Trang chủ</a></div>
+            <div><a href="qlNhanVien.html" style="text-decoration: none; color: #000;">Quản lí nhân viên</a></div>
+        </div>
+        <div class="right-container">
+            <div class="icon-container" id="menuButton">
+                &#128100;
+            </div>
+            <ul class="dropdown-menu" id="menuDropdown">
+                <li><a href="thongTinCaNhan.html" style="text-decoration: none; color: #000;">Thông tin cá nhân</a></li>
+                <li><a onclick="logout()" style="color: red;">Đăng xuất</a></li>
+            </ul>
+        </div>
+    </header>
+    <div class="formthongtin" id="formsua">
+        <h3>Thông tin cá nhân</h3>
+        <div class="formflex">
+            <form>
+                <div class="form-group">
+                    <label>Mã NV:</label>
+                    <input type="text" id="ID" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Họ tên:</label>
+                    <input type="text" id="hoTen" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Ngày sinh:</label>
+                    <input type="text" id="ngaySinh" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Giới tính:</label>
+                    <input type="text" id="gioiTinh" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Phòng ban:</label>
+                    <input type="text" id="phongBan" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Chức vụ:</label>
+                    <input type="text" id="chucVu" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Ngày vào làm:</label>
+                    <input type="text" id="ngayVaoLam" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Lương cơ bản:</label>
+                    <input type="text" id="luongCoBan" readonly>
+                </div>
+            </form>
+            <div>
+                <img src="Screenshot 2025-03-19 201912.png" style="width: 240px; margin-left: 25px;">
+                <form id="editForm"
+                    style="border: 1.4px solid black; padding: 10px; border-radius: 10px; margin-left: 30px;">
+                    <h2>Thông tin liên hệ</h2>
+
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="text" id="Email" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>SĐT:</label>
+                        <input type="text" id="SDT" readonly>
+                    </div>
+
+                    <button class="btluu" type="button" onclick="Sua()" id="sua" style="display: block;">Sửa</button>
+                    <button class="btluu" type="button" onclick="Luu()" id="luu"
+                        style="display: none; background-color: rgb(0, 171, 0);">Lưu</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const menuButton = document.getElementById('menuButton');
+        const menuDropdown = document.getElementById('menuDropdown');
+
+        menuButton.addEventListener('click', () => {
+            menuDropdown.classList.toggle('active');
+        });
+
+        document.addEventListener("DOMContentLoaded", async function () {
+            await loadForm();
+        });
+
+        async function loadForm() {
+            let maNhanVien = localStorage.getItem("maNhanVien");
+            try {
+                const response = await fetch(`https://localhost:7219/api/NhanVien/nhanvien/${maNhanVien}`);
+                if (!response.ok) {
+                    throw new Error("Không thể lấy dữ liệu");
+                }
+
+                const data = await response.json();
+
+                document.getElementById("ID").value = data.maNhanVien;
+                document.getElementById("hoTen").value = data.hoTen;
+                document.getElementById("ngaySinh").value = data.ngaySinh;
+                document.getElementById("gioiTinh").value = data.gioiTinh;
+                document.getElementById("phongBan").value = data.tenPhongBan;
+                document.getElementById("chucVu").value = data.chucVu;
+                document.getElementById("ngayVaoLam").value = data.ngayVaoLam;
+                document.getElementById("luongCoBan").value = data.luongCoBan;
+                document.getElementById("Email").value = data.email;
+                document.getElementById("SDT").value = data.soDienThoai;
+
+            } catch (error) {
+                console.error("Lỗi:", error);
+                alert("Không thể lấy dữ liệu!");
+            }
+        }
+
+        function Sua() {
+            let inputs = document.querySelectorAll("#editForm input");
+            inputs.forEach(input => {
+                input.removeAttribute("readonly");
+            });
+            document.getElementById("sua").style.display = "none";
+            document.getElementById("luu").style.display = "block";
+        }
+
+        async function Luu() {
+            let maNhanVien = localStorage.getItem("maNhanVien");
+            let Email = document.getElementById("Email").value;
+            let SDT = document.getElementById("SDT").value;
+
+            if (!SDT || !Email) {
+                alert("Vui lòng điền đầy đủ thông tin.");
+                return;
+            }
+
+            let phoneRegex = /^[0-9]{10}$/;
+            if (!phoneRegex.test(SDT)) {
+                alert("Số điện thoại phải có đúng 10 chữ số và không chứa ký tự khác.");
+                return;
+            }
+
+            let emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+            if (!emailRegex.test(Email)) {
+                alert("Email phải có dạng xxx@gmail.com.");
+                return;
+            }
+
+            const data = {
+                email: Email,
+                soDienThoai: SDT,
+            };
+
+
+            const response = await fetch(`https://localhost:7219/api/NhanVien/nhanvien/${maNhanVien}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+
+            let result = await response.text();
+
+            if (!response.ok) {
+                console.error("Lỗi Server:", result);
+                alert(result); 
+            } else {
+                console.log("Thành công:", result);
+                alert("Cập nhật thành công!");
+                location.reload();
+            }
+
+        }
+    </script>
+</body>

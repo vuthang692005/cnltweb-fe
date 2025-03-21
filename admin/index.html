@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quyển Lịch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f4f4f4;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            height: 90%;
+        }
+
+        .body {
+            width: 850px;
+            height: 450px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .calendar {
+            width: 350px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+
+        .days,
+        .dates {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .day,
+        .date {
+            padding: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .date {
+            background: #eee;
+            border-radius: 5px;
+        }
+
+        .selected {
+            background: rgb(0, 171, 0) !important;
+            color: white;
+        }
+
+        .delete {
+            background: red !important;
+            color: white;
+        }
+
+        .check {
+            background: #007bff !important;
+            color: white;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .selector {
+            margin-top: 10px;
+            display: none;
+        }
+
+        .disabled {
+            pointer-events: none;
+        }
+
+        header {
+            background-color: white;
+            width: 100%;
+            height: 10%;
+            padding: 0px 20px;
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            height: 100%;
+            width: auto;
+            padding-right: 15px;
+        }
+
+        .menu {
+            height: 100%;
+            align-items: center;
+        }
+
+        .right-container {
+            display: flex;
+            align-items: center;
+        }
+
+
+
+        .icon-container {
+            width: 40px;
+            height: 40px;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            margin-left: 20px;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background-color: white;
+            width: 200px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .dropdown-menu li {
+            list-style: none;
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .dropdown-menu li:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-menu li:hover {
+            background-color: #f0f0f0;
+        }
+
+        .left-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .left-container div {
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .left-container div:hover {
+            background-color: #7ad3ff;
+        }
+
+        .menu {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .button {
+            flex: 1;
+            /* Chia đều khoảng cách */
+            text-align: center;
+            padding: 10px 15px;
+            background: #eee;
+            color: #007bff;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 0 5px;
+            white-space: nowrap;
+            /* Giữ nội dung trên một dòng */
+        }
+
+        .button:first-child {
+            flex: 1;
+            /* Điều chỉnh nếu cần */
+        }
+
+        .button:hover,
+        .button.active {
+            background: #0056b3;
+            color: white;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .table-container {
+            max-height: 100%;
+            overflow-y: auto;
+            border-radius: 12px;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .custom-table th,
+        .custom-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .custom-table th {
+            background-color: #007BFF;
+            /* Màu xanh dương */
+            color: white;
+        }
+
+        .custom-table tbody tr:nth-child(even) {
+            background-color: #e3f2fd;
+            /* Xanh dương nhạt */
+        }
+
+        .custom-table tbody tr:hover {
+            background-color: #bbdefb;
+            /* Xanh dương đậm hơn khi hover */
+        }
+
+        .custom-table td {
+            color: #333;
+        }
+
+        /* Toàn bộ thanh cuộn */
+        ::-webkit-scrollbar {
+            width: 10px;
+            border-radius: 10px;
+            /* Bo góc */
+        }
+
+        /* Nền của thanh cuộn */
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 12px;
+            /* Bo góc */
+        }
+
+        /* Thanh trượt (phần di chuyển) */
+        ::-webkit-scrollbar-thumb {
+            background: #007bff;
+            /* Màu xanh dương */
+            border-radius: 12px;
+            /* Bo góc */
+        }
+
+        /* Khi di chuột vào thanh cuộn */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0056b3;
+        }
+
+        .formsua {
+            width: 500px;
+            padding: 20px;
+            position: fixed;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000;
+        }
+
+        .formsua h3 {
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+            padding-bottom: 30px;
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            font-weight: bold;
+            color: black;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group label {
+            width: 100px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .btluu {
+            width: 100%;
+            padding: 10px;
+            background-color: blue;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: red;
+        }
+
+        .monthYear {
+            padding-left: 65px;
+            padding-right: 65px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 998;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="left-container">
+            <a href="index.html" class="logo"><img src="j97.jpg" class="logo"></a>
+            <div><a href="index.html" style="text-decoration: none; color: #000;">Quản lí lịch làm việc</a></div>
+            <div><a href="qlNhanVien.html" style="text-decoration: none; color: #000;">Quản lí nhân viên</a></div>
+        </div>
+        <div class="right-container">
+            <div class="icon-container" id="menuButton">
+                &#128100;
+            </div>
+
+            <ul class="dropdown-menu" id="menuDropdown">
+                <li><a href="thietLapQuyDinh.html" style="text-decoration: none; color: #000;">Thiết lập quy định</a>
+                </li>
+                <li><a onclick="logout()" style="color: red;">Đăng xuất</a></li>
+            </ul>
+        </div>
+    </header>
+    <div class="container">
+        <div class="overlay" id="overlay" onclick="closeForm()"></div>
+        <div class="formsua" id="formsua">
+            <a class="close-btn" onclick="closeForm()">X</a>
+            <h3>Chỉnh sửa thông tin</h3>
+            <form id="editForm">
+                <div class="form-group">
+                    <label>Mã CC:</label>
+                    <input type="text" id="MaCC" readonly style="color: #7c7c7c;">
+                </div>
+                <div class="form-group">
+                    <label>Tình trạng:</label>
+                    <select id="editTinhTrang">
+                        <option value="">NULL</option>
+                        <option>Có mặt</option>
+                        <option>Muộn</option>
+                        <option>Nghỉ phép</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Tăng ca:</label>
+                    <select id="editTangCa">
+                        <option value="True">Có</option>
+                        <option value="False">Không</option>
+                    </select>
+                </div>
+
+                <button class="btluu" type="button" onclick="luuChinhSua()">Lưu</button>
+            </form>
+        </div>
+        <div class="body"></div>
+        <div class="calendar">
+            <div class="menu">
+                <div class="button" onclick="chiTiet()">Chi tiết</div>
+                <div class="button" onclick="them()">Thêm</div>
+                <div class="button" onclick="xoa()">Xóa</div>
+            </div>
+            <div class="header">
+                <button onclick="prevMonth()">❮</button>
+                <span class="monthYear" id="monthYear"></span>
+                <button onclick="nextMonth()">❯</button>
+            </div>
+
+            <div class="days">
+                <div class="day">CN</div>
+                <div class="day">T2</div>
+                <div class="day">T3</div>
+                <div class="day">T4</div>
+                <div class="day">T5</div>
+                <div class="day">T6</div>
+                <div class="day">T7</div>
+            </div>
+            <div class="dates" id="dates"></div>
+            <div class="dates" id="dates1"></div>
+            <div class="dates" id="dates2"></div>
+            <button id="them" onclick="submitSelectedDates()" style="background-color: rgb(0, 171, 0);">Thêm</button>
+            <button id="xoa" onclick="deleteSelectedDates()" style="background-color: red;">Xóa</button>
+        </div>
+    </div>
+
+
+    <script>
+        window.onload = function () {
+            chiTiet();
+        };
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const chiTietButton = document.querySelector(".button:nth-child(1)");
+            if (chiTietButton) {
+                chiTietButton.classList.add("active");
+            }
+
+            document.querySelectorAll(".button").forEach(button => {
+                button.addEventListener("click", function () {
+                    document.querySelectorAll(".button").forEach(btn => btn.classList.remove("active")); // Xóa active khỏi tất cả
+                    this.classList.add("active"); // Thêm active vào nút được bấm
+                });
+            });
+        });
+
+        const menuButton = document.getElementById('menuButton');
+        const menuDropdown = document.getElementById('menuDropdown');
+
+        menuButton.addEventListener('click', () => {
+            menuDropdown.classList.toggle('active');
+        });
+
+        let currentDate = new Date();
+        let selectedDates1 = new Set();
+        let selectedDates2 = new Set();
+        let today = new Date();
+        let selectedDate2 = today.toLocaleDateString("sv-SE");
+
+        function xoa() {
+            let datesDiv = document.getElementById("dates");
+            let buttenthem = document.getElementById("them");
+            let datesDiv1 = document.getElementById("dates1");
+            let datesDiv2 = document.getElementById("dates2");
+            let buttenxoa = document.getElementById("xoa");
+            datesDiv.classList.add("hidden");
+            datesDiv2.classList.add("hidden");
+            buttenthem.classList.add("hidden");
+            datesDiv1.classList.remove("hidden");
+            buttenxoa.classList.remove("hidden");
+        }
+
+        function them() {
+            let datesDiv = document.getElementById("dates1");
+            let datesDiv2 = document.getElementById("dates2");
+            let buttenxoa = document.getElementById("xoa");
+            let datesDiv1 = document.getElementById("dates");
+            let buttenthem = document.getElementById("them");
+            datesDiv.classList.add("hidden");
+            datesDiv2.classList.add("hidden");
+            buttenxoa.classList.add("hidden");
+            datesDiv1.classList.remove("hidden");
+            buttenthem.classList.remove("hidden");
+        }
+
+        function chiTiet() {
+            let datesDiv = document.getElementById("dates1");
+            let datesDiv2 = document.getElementById("dates2");
+            let buttenxoa = document.getElementById("xoa");
+            let datesDiv1 = document.getElementById("dates");
+            let buttenthem = document.getElementById("them");
+            datesDiv.classList.add("hidden");
+            datesDiv2.classList.remove("hidden");
+            buttenxoa.classList.add("hidden");
+            datesDiv1.classList.add("hidden");
+            buttenthem.classList.add("hidden");
+        }
+
+        async function checkExistingDates() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth() + 1;
+            const datesContainer = document.getElementById("dates");
+
+            let existingDates = new Set();
+
+            for (let day = 1; day <= 31; day++) {
+                let formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+                try {
+                    const response = await fetch(`https://localhost:7219/api/admin/KiemTraNgay?ngayChamCong=${formattedDate}`, {
+                        method: "GET",
+                        headers: { "Content-Type": "application/json" }
+                    });
+
+                    if (response.ok) {
+                        existingDates.add(formattedDate); // Ngày đã tồn tại
+                    }
+                } catch (error) {
+                    console.error(`Lỗi khi kiểm tra ngày ${formattedDate}:`, error);
+                }
+            }
+
+            // Cập nhật giao diện
+            datesContainer.childNodes.forEach(dateElement => {
+                const day = dateElement.innerText;
+                if (!isNaN(day)) {
+                    let dateKey = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                    if (existingDates.has(dateKey)) {
+                        dateElement.style.background = "#ccc";
+                        dateElement.style.color = "white";
+                        dateElement.style.pointerEvents = "none"; // Vô hiệu hóa click
+
+                    }
+                }
+
+            });
+        }
+
+        function renderCalendar() {
+            const monthYear = document.getElementById("monthYear");
+            const datesContainer = document.getElementById("dates");
+
+            // Vô hiệu hóa lịch trước khi kiểm tra ngày
+            datesContainer.classList.add("disabled");
+
+            const month = currentDate.getMonth();
+            const year = currentDate.getFullYear();
+
+            monthYear.innerText = `${year} - Tháng ${month + 1}`;
+            datesContainer.innerHTML = "";
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const lastDate = new Date(year, month + 1, 0).getDate();
+
+            for (let i = 0; i < firstDay; i++) {
+                datesContainer.innerHTML += `<div></div>`;
+            }
+
+            for (let i = 1; i <= lastDate; i++) {
+                let dateKey = `${year}-${month + 1}-${i}`;
+
+                let className = "date";
+                let dateElement = document.createElement("div");
+                dateElement.className = className;
+                dateElement.innerText = i;
+                dateElement.onclick = () => toggleDate(dateElement, dateKey);
+                datesContainer.appendChild(dateElement);
+            }
+
+            // Kiểm tra ngày tồn tại xong thì kích hoạt lại lịch
+            checkExistingDates().then(() => {
+                datesContainer.classList.remove("disabled");
+            });
+        }
+
+        async function checkExistingDates1() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth() + 1;
+            const datesContainer = document.getElementById("dates1");
+            const datesContainer2 = document.getElementById("dates2");
+
+            let existingDates = new Set();
+
+            for (let day = 1; day <= 31; day++) {
+                let formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+                try {
+                    const response = await fetch(`https://localhost:7219/api/admin/KiemTraNgay?ngayChamCong=${formattedDate}`, {
+                        method: "GET",
+                        headers: { "Content-Type": "application/json" }
+                    });
+
+                    if (response.ok) {
+                        existingDates.add(formattedDate); // Ngày đã tồn tại
+                    }
+                } catch (error) {
+                    console.error(`Lỗi khi kiểm tra ngày ${formattedDate}:`, error);
+                }
+            }
+
+            // Cập nhật giao diện chỉ với các phần tử có class "date"
+            datesContainer.querySelectorAll('.date').forEach(dateElement => {
+                const day = parseInt(dateElement.innerText, 10); // Chỉ lấy số
+                if (!isNaN(day)) {
+                    let dateKey = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                    if (!existingDates.has(dateKey)) {
+                        dateElement.style.background = "#ccc";
+                        dateElement.style.color = "white";
+                        dateElement.style.pointerEvents = "none"; // Vô hiệu hóa click
+                    }
+                }
+            });
+
+            datesContainer2.querySelectorAll('.date').forEach(dateElement => {
+                const day = parseInt(dateElement.innerText, 10); // Chỉ lấy số
+                if (!isNaN(day)) {
+                    let dateKey = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                    if (!existingDates.has(dateKey)) {
+                        dateElement.style.background = "#ccc";
+                        dateElement.style.color = "white";
+                        dateElement.style.pointerEvents = "none"; // Vô hiệu hóa click
+                    }
+                }
+            });
+        }
+
+
+        function renderCalendar1() {
+            const monthYear = document.getElementById("monthYear");
+            const datesContainer = document.getElementById("dates1");
+
+            // Vô hiệu hóa lịch trước khi kiểm tra ngày
+            datesContainer.classList.add("disabled");
+
+            const month = currentDate.getMonth();
+            const year = currentDate.getFullYear();
+
+            monthYear.innerText = `${year} - Tháng ${month + 1}`;
+            datesContainer.innerHTML = "";
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const lastDate = new Date(year, month + 1, 0).getDate();
+
+            for (let i = 0; i < firstDay; i++) {
+                datesContainer.innerHTML += `<div></div>`;
+            }
+
+            for (let i = 1; i <= lastDate; i++) {
+                let dateKey = `${year}-${month + 1}-${i}`;
+
+                let className = "date";
+                let dateElement = document.createElement("div");
+                dateElement.className = className;
+                dateElement.innerText = i;
+                dateElement.onclick = () => removeDate(dateElement, dateKey);
+                datesContainer.appendChild(dateElement);
+            }
+
+            // Kiểm tra ngày tồn tại xong thì kích hoạt lại lịch
+            checkExistingDates1().then(() => {
+                datesContainer.classList.remove("disabled");
+            });
+        }
+
+        function renderCalendar2() {
+            const monthYear = document.getElementById("monthYear");
+            const datesContainer = document.getElementById("dates2");
+
+            // Vô hiệu hóa lịch trước khi kiểm tra ngày
+            datesContainer.classList.add("disabled");
+
+            // Lấy tháng và năm hiện tại của lịch
+            const month = currentDate.getMonth();
+            const year = currentDate.getFullYear();
+
+            monthYear.innerText = `${year} - Tháng ${month + 1}`;
+            datesContainer.innerHTML = "";
+
+            // Xác định ngày đầu tiên của tháng và tổng số ngày
+            const firstDayIndex = new Date(year, month, 1).getDay(); // Thứ của ngày 1 trong tháng (0: CN, 1: T2, ...)
+            const lastDate = new Date(year, month + 1, 0).getDate(); // Ngày cuối tháng
+
+            // Lấy ngày hiện tại
+            let today = new Date();
+            let todayMonth = today.getMonth();
+            let todayYear = today.getFullYear();
+            let todayStr = `${todayYear}-${todayMonth + 1}-${today.getDate()}`;
+            let firstDayStr = `${year}-${month + 1}-1`; // Ngày đầu tiên của tháng
+
+            // Thêm khoảng trống trước ngày 1 để lịch đúng thứ
+            for (let i = 0; i < (firstDayIndex === 0 ? 6 : firstDayIndex); i++) {
+                datesContainer.innerHTML += `<div class="empty"></div>`;
+            }
+
+            // Hiển thị ngày trong tháng
+            for (let i = 1; i <= lastDate; i++) {
+                let dateKey = `${year}-${month + 1}-${i}`;
+                let className = "date";
+
+                // Nếu đang hiển thị tháng hiện tại, đánh dấu ngày hôm nay
+                if (year === todayYear && month === todayMonth && dateKey === todayStr) {
+                    className += " check";
+                    selectedDate2 = dateKey;
+                    console.log("selectedDate2:", selectedDate2);
+                }
+                // Nếu không phải tháng hiện tại, đánh dấu ngày đầu tiên
+                else if (year !== todayYear || month !== todayMonth) {
+                    if (dateKey === firstDayStr) {
+                        className += " check";
+                        selectedDate2 = dateKey;
+                        console.log("selectedDate2:", selectedDate2);
+                    }
+                }
+
+                let dateElement = document.createElement("div");
+                dateElement.className = className;
+                dateElement.innerText = i;
+                dateElement.onclick = () => checkDate(dateElement, dateKey);
+
+                datesContainer.appendChild(dateElement);
+            }
+
+            // Kiểm tra ngày tồn tại xong thì kích hoạt lại lịch
+            checkExistingDates1().then(() => {
+                datesContainer.classList.remove("disabled");
+            });
+        }
+
+
+        function toggleDate(element, dateKey) {
+            if (selectedDates1.has(dateKey)) {
+                selectedDates1.delete(dateKey);
+                element.classList.remove("selected");
+            } else {
+                selectedDates1.add(dateKey);
+                element.classList.add("selected");
+            }
+        }
+
+        function removeDate(element, dateKey) {
+            if (selectedDates2.has(dateKey)) {
+                selectedDates2.delete(dateKey);
+                element.classList.remove("delete");
+            } else {
+                selectedDates2.add(dateKey);
+                element.classList.add("delete");
+            }
+        }
+
+        function checkDate(element, dateKey) {
+            if (selectedDate2) {
+                document.querySelectorAll(".date").forEach(date => {
+                    date.classList.remove("check");
+                });
+            }
+            selectedDate2 = dateKey;
+            element.classList.add("check");
+            fetchChamCong()
+        }
+
+
+        function prevMonth() {
+            selectedDates1.clear();
+            selectedDates2.clear();
+            let today = new Date();
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+            renderCalendar1();
+            renderCalendar2();
+            fetchChamCong()
+
+        }
+
+
+        function nextMonth() {
+            selectedDates1.clear();
+            selectedDates2.clear();
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+            renderCalendar1();
+            renderCalendar2();
+            fetchChamCong()
+        }
+
+        async function submitSelectedDates() {
+            const selectedArray = Array.from(selectedDates1);
+            if (selectedArray.length === 0) {
+                alert("Vui lòng chọn ít nhất một ngày!");
+                return;
+            }
+
+            for (const date of selectedArray) {
+                const formattedDate = date.split('-').map(num => num.padStart(2, '0')).join('-');
+                try {
+                    const response = await fetch(`https://localhost:7219/api/admin/tao-cham-cong?ngayChamCong=${formattedDate}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Lỗi khi gửi ngày ${formattedDate}: ${response.statusText}`);
+                    }
+                } catch (error) {
+                    console.error("Lỗi API:", error);
+                    alert("Có lỗi xảy ra khi gửi dữ liệu!");
+                    return;
+                }
+            }
+
+            alert("Chấm công thành công cho các ngày đã chọn!");
+            selectedDates1.clear();
+            renderCalendar();
+            renderCalendar1();
+            renderCalendar2();
+            fetchChamCong()
+        }
+
+        async function deleteSelectedDates() {
+            const selectedArray = Array.from(selectedDates2);
+            if (selectedArray.length === 0) {
+                alert("Vui lòng chọn ít nhất một ngày!");
+                return;
+            }
+
+            for (const date of selectedArray) {
+                const formattedDate = date.split('-').map(num => num.padStart(2, '0')).join('-');
+                try {
+                    const response = await fetch(`https://localhost:7219/api/admin/XoaChamCong?ngayChamCong=${formattedDate}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Lỗi khi gửi ngày ${formattedDate}: ${response.statusText}`);
+                    }
+                } catch (error) {
+                    console.error("Lỗi API:", error);
+                    alert("Có lỗi xảy ra khi gửi dữ liệu!");
+                    return;
+                }
+            }
+
+            alert("Xóa thành công cho các ngày đã chọn!");
+            selectedDates2.clear();
+            renderCalendar();
+            renderCalendar1();
+            renderCalendar2();
+            fetchChamCong()
+        }
+
+        async function fetchChamCong() {
+            try {
+                let response = await fetch(`https://localhost:7219/api/admin/KiemTraNgay?ngayChamCong=${selectedDate2}`, {
+                    method: "GET"
+                });
+
+                let data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data);
+                }
+                renderTable(data);
+            } catch (error) {
+                document.querySelector(".body").innerHTML = `<p style="color:red;">Lỗi: ${error.message}</p>`;
+            }
+        }
+
+        // Hàm hiển thị dữ liệu lên bảng
+        function renderTable(data) {
+            let bodyDiv = document.querySelector(".body");
+            bodyDiv.innerHTML = `
+        <div class="table-container">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Mã NV</th>
+                        <th>Mã CC</th>
+                        <th>Tên NV</th>
+                        <th>Giờ Vào</th>
+                        <th>Giờ Ra</th>
+                        <th>Tình Trạng</th>
+                        <th>Tăng Ca</th>
+                        <th>Giờ Tăng Ca</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.map(row => `
+                        <tr>
+                            <td>${row.maNhanVien}</td>
+                            <td>${row.maChamCong}</td>
+                            <td>${row.tenNhanVien}</td>
+                            <td>${row.gioVao || "-"}</td>
+                            <td>${row.gioRa || "-"}</td>
+                            <td>${row.tinhTrang || "-"}</td>
+                            <td>${row.tangCa === "True" ? "Có" : "Không"}</td>
+                            <td>${row.soGioTangCa}</td>
+                            <td><a onclick="sua()" style="color: blue; cursor: pointer;">sửa</a></td>
+                        </tr>
+                    `).join("")}
+                </tbody>
+            </table>
+        </div>
+    `;
+        }
+        let currentRow = null;
+        function sua() {
+            // Tìm dòng <tr> chứa nút "sửa" được nhấn
+            currentRow = event.target.closest("tr");
+
+            // Lấy dữ liệu từ các ô trong hàng
+            let MaCC = currentRow.children[1].textContent.trim();
+            let tinhTrang = currentRow.children[5].textContent.trim();
+            let tangCa = currentRow.children[6].textContent.trim() === "Có" ? "True" : "False";
+
+            // Gán giá trị vào form
+            document.getElementById("MaCC").value = MaCC;
+            document.getElementById("editTinhTrang").value = tinhTrang === "-" ? "" : tinhTrang;
+            document.getElementById("editTangCa").value = tangCa;
+
+            // Hiển thị form
+            document.getElementById("overlay").style.display = "block";
+            document.getElementById("formsua").style.display = "block";
+        }
+
+        async function luuChinhSua() {
+            if (!currentRow) return;
+            let MaCC = document.getElementById("MaCC").value;
+            let newTinhTrang = document.getElementById("editTinhTrang").value;
+            let newTangCa = document.getElementById("editTangCa").value;
+
+            if (newTinhTrang === "") {
+                newTinhTrang = null;
+            }
+            
+            if (!MaCC) {
+                alert("Không có mã chấm công!");
+                return;
+            }
+
+            let requestData = {
+                tinhTrang: newTinhTrang,
+                tangCa: newTangCa
+            };
+
+            try {
+                let response = await fetch(`https://localhost:7219/api/admin/SuaChamCong?maChamCong=${MaCC}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                let result = await response.json();
+
+                if (response.ok) {
+                    alert("Cập nhật thành công!");
+                    closeForm();
+                    fetchChamCong();
+                } else {
+                    alert(result.message || "Cập nhật thất bại!");
+                }
+            } catch (error) {
+                console.error("Lỗi khi cập nhật:", error);
+                alert("Có lỗi xảy ra, vui lòng thử lại!");
+            }
+
+            closeForm();
+            fetchChamCong()
+        }
+
+        function closeForm() {
+            document.getElementById("overlay").style.display = "none";
+            document.getElementById("formsua").style.display = "none";
+            currentRow = null;
+        }
+
+        // Gọi API khi trang tải
+        document.addEventListener("DOMContentLoaded", fetchChamCong);
+
+        renderCalendar();
+        renderCalendar1();
+        renderCalendar2();
+    </script>
+</body>
+
+</html>

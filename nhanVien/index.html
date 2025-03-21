@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quyển Lịch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f4f4f4;
+            height: 100vh;
+        }
+
+        header {
+            background-color: white;
+            width: 100%;
+            height: 10%;
+            padding: 0px 20px;
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            height: 100%;
+            width: auto;
+            padding-right: 15px;
+        }
+
+        .menu {
+            height: 100%;
+            align-items: center;
+        }
+
+        .right-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .icon-container {
+            width: 40px;
+            height: 40px;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            margin-left: 20px;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background-color: white;
+            width: 200px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .dropdown-menu li {
+            list-style: none;
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .dropdown-menu li:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-menu li:hover {
+            background-color: #f0f0f0;
+        }
+
+        .left-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .left-container div {
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .left-container div:hover {
+            background-color: #7ad3ff;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            height: 90%;
+        }
+
+        .body {
+            width: 850px;
+            height: 450px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .calendar {
+            width: 350px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .days,
+        .dates {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .day,
+        .date {
+            padding: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .date {
+            background: #eee;
+            border-radius: 5px;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .selector {
+            margin-top: 10px;
+            display: none;
+        }
+
+        .disabled {
+            pointer-events: none;
+        }
+
+        .check {
+            background: #007bff !important;
+            color: white;
+        }
+
+        .monthYear {
+            padding-left: 65px;
+            padding-right: 65px;
+        }
+
+        .formcong {
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            width: 550px;
+        }
+
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            width: 35%;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 75%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+            padding-left: 20px;
+        }
+
+        .buttons button {
+            padding: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            margin: 15px;
+            height: 50px;
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="left-container">
+            <a href="index.html" class="logo"><img src="j97.jpg" class="logo"></a>
+            <div><a href="index.html" style="text-decoration: none; color: #000;">Trang chủ</a></div>
+            <div><a href="qlNhanVien.html" style="text-decoration: none; color: #000;">Quản lí nhân viên</a></div>
+        </div>
+        <div class="right-container">
+            <div class="icon-container" id="menuButton">
+                &#128100;
+            </div>
+            <ul class="dropdown-menu" id="menuDropdown">
+                <li><a href="thongTinCaNhan.html" style="text-decoration: none; color: #000;">Thông tin cá nhân</a>
+                </li>
+                <li><a onclick="logout()" style="color: red;">Đăng xuất</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="body">
+            <h1 style="text-align: center; padding-bottom: 30px; padding-top: 20px">Chấm Công</h1>
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <div class="formcong">
+                    <div class="form-group">
+                        <label>Ngày Chấm Công:</label>
+                        <input type="text" id="ngayChamCong" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Giờ Vào:</label>
+                        <input type="text" id="gioVao" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Giờ Ra:</label>
+                        <input type="text" id="gioRa" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Tình Trạng:</label>
+                        <input type="text" id="tinhTrang" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Tăng Ca:</label>
+                        <input type="text" id="tangCa">
+                    </div>
+                    <div class="form-group">
+                        <label>Số Giờ Tăng Ca:</label>
+                        <input type="text" id="soGioTangCa">
+                    </div>
+
+                </div>
+                <div class="buttons">
+                    <button id="checkIn" onclick="checkIn()">Check In</button>
+                    <button id="checkOut" onclick="checkOut()">Check Out</button>
+                </div>
+            </div>
+        </div>
+        <div class="calendar">
+            <div class="header">
+                <button onclick="prevMonth()">❮</button>
+                <span class="monthYear" id="monthYear"></span>
+                <button onclick="nextMonth()">❯</button>
+            </div>
+            <div class="days">
+                <div class="day">CN</div>
+                <div class="day">T2</div>
+                <div class="day">T3</div>
+                <div class="day">T4</div>
+                <div class="day">T5</div>
+                <div class="day">T6</div>
+                <div class="day">T7</div>
+            </div>
+            <div class="dates" id="dates"></div>
+
+        </div>
+    </div>
+
+    <script>
+        let currentDate = new Date(); // Ngày hiện tại
+        let selectedDate2 = currentDate.toLocaleDateString("sv-SE"); // Biến lưu ngày được chọn
+        const menuButton = document.getElementById('menuButton');
+        const menuDropdown = document.getElementById('menuDropdown');
+
+        menuButton.addEventListener('click', () => {
+            menuDropdown.classList.toggle('active');
+        });
+
+        document.addEventListener("DOMContentLoaded", async function () {
+            await formcong();
+        });
+
+        async function checkExistingDates() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth() + 1;
+            const datesContainer = document.getElementById("dates");
+
+            let existingDates = new Set();
+            let maNhanVien = localStorage.getItem("maNhanVien");
+
+            for (let day = 1; day <= 31; day++) {
+                let formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+                try {
+                    const response = await fetch(`https://localhost:7219/api/NhanVien/chamcong?maNhanVien=${maNhanVien}&ngayChamCong=${formattedDate}`, {
+                        method: "GET",
+                        headers: { "Content-Type": "application/json" }
+                    });
+
+                    if (response.ok) {
+                        existingDates.add(formattedDate); // Ngày đã tồn tại
+                    }
+                } catch (error) {
+                    console.error(`Lỗi khi kiểm tra ngày ${formattedDate}:`, error);
+                }
+            }
+
+            // Cập nhật giao diện
+            datesContainer.querySelectorAll('.date').forEach(dateElement => {
+                const day = parseInt(dateElement.innerText, 10);
+                if (!isNaN(day)) {
+                    let dateKey = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                    if (!existingDates.has(dateKey)) {
+                        dateElement.style.background = "#ccc";
+                        dateElement.style.color = "white";
+                        dateElement.style.pointerEvents = "none"; // Vô hiệu hóa click
+
+                    }
+                }
+
+            });
+        }
+
+        function renderCalendar() {
+            const monthYear = document.getElementById("monthYear");
+            const datesContainer = document.getElementById("dates");
+
+            // Vô hiệu hóa lịch trước khi kiểm tra ngày
+            datesContainer.classList.add("disabled");
+
+            // Lấy tháng và năm hiện tại của lịch
+            const month = currentDate.getMonth();
+            const year = currentDate.getFullYear();
+
+            monthYear.innerText = `${year} - Tháng ${month + 1}`;
+            datesContainer.innerHTML = "";
+
+            // Xác định ngày đầu tiên của tháng và tổng số ngày
+            const firstDayIndex = new Date(year, month, 1).getDay(); // Thứ của ngày 1 trong tháng (0: CN, 1: T2, ...)
+            const lastDate = new Date(year, month + 1, 0).getDate(); // Ngày cuối tháng
+
+            // Lấy ngày hiện tại
+            let today = new Date();
+            let todayMonth = today.getMonth();
+            let todayYear = today.getFullYear();
+            let todayStr = `${todayYear}-${todayMonth + 1}-${today.getDate()}`;
+            let firstDayStr = `${year}-${month + 1}-1`; // Ngày đầu tiên của tháng
+
+            // Thêm khoảng trống trước ngày 1 để lịch đúng thứ
+            for (let i = 0; i < (firstDayIndex === 0 ? 6 : firstDayIndex); i++) {
+                datesContainer.innerHTML += `<div class="empty"></div>`;
+            }
+
+            // Hiển thị ngày trong tháng
+            for (let i = 1; i <= lastDate; i++) {
+                let dateKey = `${year}-${month + 1}-${i}`;
+                let className = "date";
+
+                // Nếu đang hiển thị tháng hiện tại, đánh dấu ngày hôm nay
+                if (year === todayYear && month === todayMonth && dateKey === todayStr) {
+                    className += " check";
+                    selectedDate2 = dateKey;
+                    console.log("selectedDate2:", selectedDate2);
+                }
+                // Nếu không phải tháng hiện tại, đánh dấu ngày đầu tiên
+                else if (year !== todayYear || month !== todayMonth) {
+                    if (dateKey === firstDayStr) {
+                        className += " check";
+                        selectedDate2 = dateKey;
+                        console.log("selectedDate2:", selectedDate2);
+                    }
+                }
+
+                let dateElement = document.createElement("div");
+                dateElement.className = className;
+                dateElement.innerText = i;
+                dateElement.onclick = () => checkDate(dateElement, dateKey);
+
+                datesContainer.appendChild(dateElement);
+            }
+
+            // Kiểm tra ngày tồn tại xong thì kích hoạt lại lịch
+            checkExistingDates().then(() => {
+                datesContainer.classList.remove("disabled");
+            });
+        }
+
+        function checkDate(element, dateKey) {
+            if (selectedDate2) {
+                document.querySelectorAll(".date").forEach(date => {
+                    date.classList.remove("check");
+                });
+            }
+            selectedDate2 = dateKey;
+            element.classList.add("check");
+            console.log("selectedDate2:", selectedDate2);
+            formcong();
+        }
+
+        function prevMonth() {
+            let today = new Date();
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+            formcong();
+        }
+
+
+        function nextMonth() {
+            let today = new Date();
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+            formcong();
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '../login.html';
+        }
+
+        async function formcong() {
+            let maNhanVien = localStorage.getItem("maNhanVien");
+
+            const response = await fetch(`https://localhost:7219/api/NhanVien/chamcong?maNhanVien=${maNhanVien}&ngayChamCong=${selectedDate2}`);
+
+            if (!response.ok) {
+                let result = await response.text();
+                console.error("Lỗi Server:", result);
+                alert(result);
+            }
+
+            const data = await response.json();
+
+            document.getElementById("ngayChamCong").value = data.ngayChamCong;
+            document.getElementById("gioVao").value = data.gioVao;
+            document.getElementById("gioRa").value = data.gioRa;
+            document.getElementById("tinhTrang").value = data.tinhTrang;
+            document.getElementById("tangCa").value = data.tangCa;
+            document.getElementById("soGioTangCa").value = data.soGioTangCa;
+        }
+
+        async function checkIn() {
+            let ngayChamCong = document.getElementById("ngayChamCong").value;
+            let maNhanVien = localStorage.getItem("maNhanVien");
+
+            const response = await fetch(`https://localhost:7219/api/NhanVien/CheckIn?maNhanVien=${maNhanVien}&ngayChamCong=${ngayChamCong}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                let result = await response.text();
+                console.error("Lỗi Server:", result);
+                alert(result);
+            } else {
+                alert("Check-in thành công!");
+            }
+            formcong();
+        }
+
+        renderCalendar()
+    </script>
+</body>

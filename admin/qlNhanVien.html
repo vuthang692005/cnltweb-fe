@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quyển Lịch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f4f4f4;
+            height: 100vh;
+        }
+
+        header {
+            background-color: white;
+            width: 100%;
+            height: 10%;
+            padding: 0px 20px;
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            height: 100%;
+            width: auto;
+            padding-right: 15px;
+        }
+
+        .menu {
+            height: 100%;
+            align-items: center;
+        }
+
+        .right-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .icon-container {
+            width: 40px;
+            height: 40px;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            margin-left: 20px;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background-color: white;
+            width: 200px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .dropdown-menu li {
+            list-style: none;
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .dropdown-menu li:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-menu li:hover {
+            background-color: #f0f0f0;
+        }
+
+        .left-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .left-container div {
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .left-container div:hover {
+            background-color: #7ad3ff;
+        }
+
+        .container {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .search-box select {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .search-box button {
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .search-box button:hover {
+            background: #0056b3;
+            transform: scale(1.05);
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tr:hover {
+            background: #e9ecef;
+            transition: background 0.3s;
+        }
+
+        .pagination {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            margin: 5px;
+            border: none;
+            border-radius: 8px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .pagination button:hover {
+            background: #0056b3;
+        }
+
+        .pagination button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        td a {
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            display: inline-block;
+            transition: background 0.3s ease;
+            cursor: pointer;
+        }
+
+        td a:first-child {
+            background-color: #007bff;
+            /* Màu xanh cho 'sửa' */
+        }
+
+        td a:last-child {
+            background-color: #dc3545;
+            /* Màu đỏ cho 'xóa' */
+        }
+
+        td a:hover {
+            opacity: 0.8;
+        }
+
+        .add-btn {
+            background: #28a745 !important;
+            /* Màu xanh lá */
+            font-weight: bold !important;
+            transition: background 0.3s ease, transform 0.2s !important;
+        }
+
+        .add-btn:hover {
+            background: #218838 !important;
+            transform: scale(1.05) !important;
+        }
+
+        .formthem {
+            width: 500px;
+            padding: 20px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+        }
+
+        .formthem h3 {
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+            padding-bottom: 30px;
+        }
+
+        .formsua {
+            width: 500px;
+            padding: 20px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border-radius: 10px;
+            display: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+
+        .formsua h3 {
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+            padding-bottom: 30px;
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            font-weight: bold;
+            color: black;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .close-btn:hover {
+            color: red;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group label {
+            width: 100px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .btluu {
+            width: 100%;
+            padding: 10px;
+            background-color: blue;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 998;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="left-container">
+            <a href="index.html" class="logo"><img src="j97.jpg" class="logo"></a>
+            <div><a href="index.html" style="text-decoration: none; color: #000;">Quản lí lịch làm việc</a></div>
+            <div><a href="qlNhanVien.html" style="text-decoration: none; color: #000;">Quản lí nhân viên</a></div>
+        </div>
+        <div class="right-container">
+            <div class="icon-container" id="menuButton">
+                &#128100;
+            </div>
+            <ul class="dropdown-menu" id="menuDropdown">
+                <li><a href="thietLapQuyDinh.html" style="text-decoration: none; color: #000;">Thiết lập quy định</a></li>
+                <li><a onclick="logout()" style="color: red;">Đăng xuất</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="search-box">
+            <input type="number" id="maNhanVien" placeholder="Nhập mã nhân viên">
+            <input type="text" id="hoTen" placeholder="Nhập họ tên">
+            <select id="maPhongBan">
+                <option value="">-- Chọn phòng ban --</option>
+                <option value="1">hành chính</option>
+                <option value="2">kế toán</option>
+            </select>
+            <input type="text" id="chucvu" placeholder="Nhập chức vụ">
+            <button onclick="loadNhanVien(1)">Tìm kiếm</button>
+            <button onclick="formThem()" class="add-btn">➕ Thêm Nhân Viên</button>
+        </div>
+
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã NV</th>
+                    <th>Họ Tên</th>
+                    <th>Ngày Sinh</th>
+                    <th>Giới Tính</th>
+                    <th>SĐT</th>
+                    <th>Email</th>
+                    <th>Phòng Ban</th>
+                    <th>Chức Vụ</th>
+                    <th>Ngày Vào Làm</th>
+                    <th>Lương Cơ Bản</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="nhanVienTable"></tbody>
+        </table>
+
+        <div class="pagination">
+            <button onclick="prevPage()">⬅️ Trước</button>
+            <span id="pageInfo">Trang 1</span>
+            <button onclick="nextPage()">Tiếp ➡️</button>
+        </div>
+
+        <div class="overlay" id="overlay" onclick="closeForm()"></div>
+
+        <div class="formsua" id="formsua">
+            <a class="close-btn" onclick="closeForm()">X</a>
+            <h3>Chỉnh sửa thông tin</h3>
+            <form id="editForm">
+                <div class="form-group">
+                    <label>Mã NV:</label>
+                    <input type="text" id="MaNV" readonly style="color: #7c7c7c;">
+                </div>
+
+                <div class="form-group">
+                    <label>Chức vụ:</label>
+                    <input type="text" id="chucVu">
+                </div>
+
+                <div class="form-group">
+                    <label>Phòng ban:</label>
+                    <select id="phongBan">
+                        <option>hành chính</option>
+                        <option>kế toán</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Lương:</label>
+                    <input type="text" id="luong">
+                </div>
+
+                <button class="btluu" type="button" onclick="luuChinhSua()">Lưu</button>
+            </form>
+        </div>
+
+        <div class="formthem" id="formThem">
+            <a class="close-btn" onclick="closeForm()">X</a>
+            <h3>Thêm nhân viên</h3>
+            <form id="createForm">
+                <div class="form-group">
+                    <label>Họ Tên:</label>
+                    <input type="text" id="name">
+                </div>
+
+                <div class="form-group">
+                    <label>Ngày sinh:</label>
+                    <input type="date" id="ngaySinh">
+                </div>
+
+                <div class="form-group">
+                    <label>Giới tính:</label>
+                    <select id="gioiTinh">
+                        <option>Nam</option>
+                        <option>Nữ</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>SĐT:</label>
+                    <input type="tel" id="sdt">
+                </div>
+
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="text" id="email">
+                </div>
+
+                <div class="form-group">
+                    <label>Phòng ban:</label>
+                    <select id="phongBan2">
+                        <option value="1">hành chính</option>
+                        <option value="2">kế toán</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Chức vụ:</label>
+                    <input type="text" id="ChucVu">
+                </div>
+
+                <div class="form-group">
+                    <label>Lương:</label>
+                    <input type="text" id="Luong">
+                </div>
+
+                <button class="btluu" type="button" onclick="themNhanVien()">Thêm</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const menuButton = document.getElementById('menuButton');
+        const menuDropdown = document.getElementById('menuDropdown');
+
+        menuButton.addEventListener('click', () => {
+            menuDropdown.classList.toggle('active');
+        });
+
+        let currentPage = 1;
+        let totalPages = 1;
+
+        async function loadNhanVien(page) {
+            currentPage = page;
+            let maNhanVien = document.getElementById("maNhanVien").value;
+            let hoTen = document.getElementById("hoTen").value;
+            let maPhongBan = document.getElementById("maPhongBan").value;
+            let chucvu = document.getElementById("chucvu").value.toLowerCase();
+
+            let url = `https://localhost:7219/api/admin/nhanvien?page=${page}`;
+            if (maNhanVien) url += `&maNhanVien=${maNhanVien}`;
+            if (hoTen) url += `&hoTen=${hoTen}`;
+            if (maPhongBan) url += `&maPhongBan=${maPhongBan}`;
+            if (chucvu) url += `&chucVu=${chucvu}`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Không tìm thấy dữ liệu");
+                const data = await response.json();
+
+                totalPages = data.totalPages;
+                document.getElementById("pageInfo").innerText = `Trang ${currentPage} / ${totalPages}`;
+
+                let tableBody = document.getElementById("nhanVienTable");
+                tableBody.innerHTML = "";
+
+                data.data.forEach(nv => {
+                    let row = `
+                    <tr>
+                        <td>${nv.maNhanVien}</td>
+                        <td>${nv.hoTen}</td>
+                        <td>${nv.ngaySinh}</td>
+                        <td>${nv.gioiTinh}</td>
+                        <td>${nv.soDienThoai}</td>
+                        <td>${nv.email}</td>
+                        <td>${nv.maPhongBan}</td>
+                        <td>${nv.chucVu}</td>
+                        <td>${nv.ngayVaoLam}</td>
+                        <td>${nv.luongCoBan}</td>
+                        <td>
+                            <a onclick="formSua()">Sửa</a>
+                            <a onclick="xoa('${nv.maNhanVien}')">Xóa</a>
+                        </td>
+                    </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+        function formThem() {
+            document.getElementById("overlay").style.display = "block";
+            document.getElementById("formThem").style.display = "block";
+        }
+
+        async function themNhanVien() {
+            // Lấy dữ liệu từ form
+            let hoTen = document.getElementById("name").value.trim();
+            let ngaySinh = document.getElementById("ngaySinh").value;
+            let gioiTinh = document.getElementById("gioiTinh").value;
+            let soDienThoai = document.getElementById("sdt").value.trim();
+            let email = document.getElementById("email").value.trim();
+            let maPhongBan = document.getElementById("phongBan2").value;
+            let chucVu = document.getElementById("ChucVu").value.trim();
+            let luongCoBan = document.getElementById("Luong").value.trim();
+
+            // Kiểm tra dữ liệu không được trống
+            if (!hoTen || !ngaySinh || !gioiTinh || !soDienThoai || !email || !maPhongBan || !chucVu || !luongCoBan) {
+                alert("Vui lòng điền đầy đủ thông tin.");
+                return;
+            }
+
+            // Kiểm tra số điện thoại (phải có đúng 10 chữ số, không chứa chữ hoặc ký tự đặc biệt)
+            let phoneRegex = /^[0-9]{10}$/;
+            if (!phoneRegex.test(soDienThoai)) {
+                alert("Số điện thoại phải có đúng 10 chữ số và không chứa ký tự khác.");
+                return;
+            }
+
+            // Kiểm tra email (phải kết thúc bằng @gmail.com)
+            let emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+            if (!emailRegex.test(email)) {
+                alert("Email phải có dạng xxx@gmail.com.");
+                return;
+            }
+
+            // Kiểm tra lương có phải số hợp lệ không
+            let luongSo = parseFloat(luongCoBan);
+            if (isNaN(luongSo) || luongSo <= 0) {
+                alert("Lương phải là một số hợp lệ và lớn hơn 0.");
+                return;
+            }
+
+            // Tạo đối tượng gửi lên API
+            let nhanVienDto = {
+                HoTen: hoTen,
+                NgaySinh: ngaySinh,
+                GioiTinh: gioiTinh,
+                SoDienThoai: soDienThoai,
+                Email: email,
+                MaPhongBan: parseInt(maPhongBan), // Chuyển về số nguyên
+                ChucVu: chucVu,
+                LuongCoBan: parseFloat(luongCoBan) // Chuyển về số thực nếu cần
+            };
+
+            try {
+                let response = await fetch("https://localhost:7219/api/admin/nhanvien", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(nhanVienDto)
+                });
+
+                let result;
+                let contentType = response.headers.get("content-type");
+
+                if (contentType && contentType.includes("application/json")) {
+                    result = await response.json();
+                } else {
+                    result = await response.text(); // Đọc phản hồi dạng chuỗi nếu không phải JSON
+                }
+
+                if (response.ok) {
+                    alert("Thêm thành công!");
+                    closeForm();
+                    loadNhanVien(currentPage);
+                } else {
+                    alert(result || "Có lỗi xảy ra!");
+                }
+            } catch (error) {
+                console.error("Lỗi:", error);
+                alert("Không thể kết nối đến máy chủ.");
+            }
+
+        }
+
+        let currentRow = null;
+        function formSua() {
+            currentRow = event.target.closest("tr");
+
+            let MaNV = currentRow.children[0].textContent.trim();
+            let tenPhongBan = currentRow.children[6].textContent.trim();
+            let chucVu = currentRow.children[7].textContent.trim();
+            let luong = currentRow.children[9].textContent.trim();
+
+            document.getElementById("MaNV").value = MaNV;
+            document.getElementById("chucVu").value = chucVu;
+            document.getElementById("phongBan").value = tenPhongBan;
+            document.getElementById("luong").value = luong;
+
+            document.getElementById("overlay").style.display = "block";
+            document.getElementById("formsua").style.display = "block";
+        }
+
+        async function luuChinhSua() {
+            if (!currentRow) return;
+            let MaNV = document.getElementById("MaNV").value;
+            let tenPhongBan = document.getElementById("phongBan").value;
+            let chucVu = document.getElementById("chucVu").value;
+            let luong = document.getElementById("luong").value;
+
+            if (!MaNV) {
+                alert("Không có mã nhân viên!");
+                return;
+            }
+
+            if (!chucVu || !phongBan || !luong) {
+                alert("Vui lòng điền đầy đủ thông tin!");
+                return;
+            }
+
+            // Kiểm tra lương có phải số hợp lệ không
+            let luongSo = parseFloat(luong);
+            if (isNaN(luongSo) || luongSo <= 0) {
+                alert("Lương phải là một số hợp lệ và lớn hơn 0.");
+                return;
+            }
+
+            let requestData = {
+                tenPhongBan: tenPhongBan,
+                chucVu: chucVu,
+                luongCoBan: parseFloat(luong)
+            };
+
+            try {
+                let response = await fetch(`https://localhost:7219/api/admin/nhanvien/${MaNV}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                let result = await response.json();
+
+                if (response.ok) {
+                    alert("Cập nhật thành công!");
+                    closeForm();
+                    loadNhanVien(currentPage);
+                } else {
+                    alert(result.message || "Cập nhật thất bại!");
+                }
+            } catch (error) {
+                console.error("Lỗi khi cập nhật:", error);
+                alert("Có lỗi xảy ra, vui lòng thử lại!");
+            }
+
+            closeForm();
+            loadNhanVien(currentPage);
+        }
+
+        async function xoa(maNhanVien) {
+            if (confirm("Bạn có chắc chắn muốn xóa nhân viên này?")) {
+                try {
+                    const response = await fetch(`https://localhost:7219/api/admin/nhanvien/${maNhanVien}`, {
+                        method: "DELETE"
+                    });
+
+                    if (!response.ok) throw new Error("Xóa thất bại!");
+
+                    alert("Xóa thành công!");
+                    loadNhanVien(currentPage); // Tải lại danh sách sau khi xóa
+                } catch (error) {
+                    alert(error.message);
+                }
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                loadNhanVien(currentPage - 1);
+            }
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                loadNhanVien(currentPage + 1);
+            }
+        }
+
+        function closeForm() {
+            document.getElementById("createForm").reset();
+            document.getElementById("overlay").style.display = "none";
+            document.getElementById("formsua").style.display = "none";
+            document.getElementById("formThem").style.display = "none";
+            currentRow = null;
+        }
+
+        loadNhanVien(1);
+    </script>
+</body>
+
+</html>
