@@ -494,6 +494,27 @@
             formcong();
         }
 
+        async function checkOut() {
+            let ngayChamCong = document.getElementById("ngayChamCong").value;
+            let maNhanVien = localStorage.getItem("maNhanVien");
+
+            const response = await fetch(`https://localhost:7219/api/NhanVien/CheckOut?maNhanVien=${maNhanVien}&ngayChamCong=${ngayChamCong}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                let result = await response.text();
+                console.error("Lỗi Server:", result);
+                alert(result);
+            } else {
+                alert("Check-out thành công!");
+            }
+            formcong();
+        }
+
         renderCalendar()
     </script>
 </body>
