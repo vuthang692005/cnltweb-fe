@@ -209,18 +209,94 @@
         .buttons {
             display: flex;
             flex-direction: column;
-            margin-top: 20px;
+            margin-top: 10px;
             padding-left: 20px;
         }
 
         .buttons button {
-            padding: 10px;
+            padding: 8px;
             cursor: pointer;
             font-size: 15px;
             font-weight: bold;
-            margin: 15px;
             height: 50px;
             width: 100px;
+        }
+
+        .formLiDo {
+            width: 500px;
+            padding: 20px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            display: none;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+
+        .formLiDo h3 {
+            font-size: 25px;
+            font-weight: bold;
+            padding-bottom: 30px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form-group1 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group1 textarea {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .btluu {
+            width: 100%;
+            padding: 10px;
+            background-color: blue;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            font-weight: bold;
+            color: black;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .close-btn:hover {
+            color: red;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 998;
         }
     </style>
 </head>
@@ -229,8 +305,8 @@
     <header>
         <div class="left-container">
             <a href="index.html" class="logo"><img src="j97.jpg" class="logo"></a>
-            <div><a href="index.html" style="text-decoration: none; color: #000;">Trang chủ</a></div>
-            <div><a href="qlNhanVien.html" style="text-decoration: none; color: #000;">Quản lí nhân viên</a></div>
+            <div><a href="index.html" style="text-decoration: none; color: #000;">Lịch làm việc</a></div>
+            <div><a href="tangCa.html" style="text-decoration: none; color: #000;">Thông tin phê duyệt</a></div>
         </div>
         <div class="right-container">
             <div class="icon-container" id="menuButton">
@@ -267,17 +343,20 @@
                     </div>
                     <div class="form-group">
                         <label>Tăng Ca:</label>
-                        <input type="text" id="tangCa">
+                        <input type="text" id="tangCa" readonly>
                     </div>
                     <div class="form-group">
                         <label>Số Giờ Tăng Ca:</label>
-                        <input type="text" id="soGioTangCa">
+                        <input type="text" id="soGioTangCa" readonly>
                     </div>
 
                 </div>
                 <div class="buttons">
                     <button id="checkIn" onclick="checkIn()">Check In</button>
                     <button id="checkOut" onclick="checkOut()">Check Out</button>
+                    <button id="dkTangCa" onclick="dkTangCa()">Đăng kí tăng ca</button>
+                    <button id="quenCheckOut" onclick="formQuenCheckOut()">Quên check-out</button>
+                    <button id="quenCheckOut" onclick="formNghiPhep()">Xin nghỉ phép</button>
                 </div>
             </div>
         </div>
@@ -297,8 +376,31 @@
                 <div class="day">T7</div>
             </div>
             <div class="dates" id="dates"></div>
-
         </div>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="closeForm()"></div>
+
+    <div class="formLiDo" id="formLiDoNghi">
+        <a class="close-btn" onclick="closeForm()">X</a>
+        <h3>Lí do xin nghỉ</h3>
+        <form>
+            <div class="form-group1">
+                <textarea id="liDo" name="liDo" rows="6" placeholder="Nhập lý do..." required></textarea>
+            </div>
+            <button class="btluu" type="button" onclick="nghiPhep()">Gửi</button>
+        </form>
+    </div>
+
+    <div class="formLiDo" id="formLiDo">
+        <a class="close-btn" onclick="closeForm()">X</a>
+        <h3>Lí do quên check-out</h3>
+        <form>
+            <div class="form-group1">
+                <textarea id="liDo" name="liDo" rows="6" placeholder="Nhập lý do..." required></textarea>
+            </div>
+            <button class="btluu" type="button" onclick="QuenCheckOut()">Gửi</button>
+        </form>
     </div>
 
     <script>
@@ -319,17 +421,17 @@
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth() + 1;
             const datesContainer = document.getElementById("dates");
+            const token = localStorage.getItem("token");
 
             let existingDates = new Set();
-            let maNhanVien = localStorage.getItem("maNhanVien");
 
             for (let day = 1; day <= 31; day++) {
                 let formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
                 try {
-                    const response = await fetch(`https://localhost:7219/api/NhanVien/chamcong?maNhanVien=${maNhanVien}&ngayChamCong=${formattedDate}`, {
+                    const response = await fetch(`https://localhost:7219/api/NhanVien/chamcong?ngayChamCong=${formattedDate}`, {
                         method: "GET",
-                        headers: { "Content-Type": "application/json" }
+                        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
                     });
 
                     if (response.ok) {
@@ -453,9 +555,12 @@
         }
 
         async function formcong() {
-            let maNhanVien = localStorage.getItem("maNhanVien");
+            const token = localStorage.getItem("token");
 
-            const response = await fetch(`https://localhost:7219/api/NhanVien/chamcong?maNhanVien=${maNhanVien}&ngayChamCong=${selectedDate2}`);
+            const response = await fetch(`https://localhost:7219/api/NhanVien/chamcong?ngayChamCong=${selectedDate2}`, {
+                method: "GET",
+                headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
+            });
 
             if (!response.ok) {
                 let result = await response.text();
@@ -469,17 +574,18 @@
             document.getElementById("gioVao").value = data.gioVao;
             document.getElementById("gioRa").value = data.gioRa;
             document.getElementById("tinhTrang").value = data.tinhTrang;
-            document.getElementById("tangCa").value = data.tangCa;
+            document.getElementById("tangCa").value = data.tangCa === "True" ? "Có" : "Không";
             document.getElementById("soGioTangCa").value = data.soGioTangCa;
         }
 
         async function checkIn() {
             let ngayChamCong = document.getElementById("ngayChamCong").value;
-            let maNhanVien = localStorage.getItem("maNhanVien");
+            const token = localStorage.getItem("token");
 
-            const response = await fetch(`https://localhost:7219/api/NhanVien/CheckIn?maNhanVien=${maNhanVien}&ngayChamCong=${ngayChamCong}`, {
+            const response = await fetch(`https://localhost:7219/api/NhanVien/CheckIn?ngayChamCong=${ngayChamCong}`, {
                 method: "PUT",
                 headers: {
+                    "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json"
                 }
             });
@@ -496,11 +602,12 @@
 
         async function checkOut() {
             let ngayChamCong = document.getElementById("ngayChamCong").value;
-            let maNhanVien = localStorage.getItem("maNhanVien");
+            const token = localStorage.getItem("token");
 
-            const response = await fetch(`https://localhost:7219/api/NhanVien/CheckOut?maNhanVien=${maNhanVien}&ngayChamCong=${ngayChamCong}`, {
+            const response = await fetch(`https://localhost:7219/api/NhanVien/CheckOut?ngayChamCong=${ngayChamCong}`, {
                 method: "PUT",
                 headers: {
+                    "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json"
                 }
             });
@@ -513,6 +620,92 @@
                 alert("Check-out thành công!");
             }
             formcong();
+        }
+
+        async function dkTangCa() {
+            let ngayChamCong = document.getElementById("ngayChamCong").value;
+            const token = localStorage.getItem("token");
+
+            const response = await fetch(`https://localhost:7219/api/NhanVien/DKTangCa?ngayChamCong=${ngayChamCong}`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                let result = await response.text();
+                console.error("Lỗi Server:", result);
+                alert(result);
+            } else {
+                alert("Đăng kí thành công!");
+            }
+        }
+
+        function formQuenCheckOut() {
+            document.getElementById("overlay").style.display = "block";
+            document.getElementById("formLiDo").style.display = "block";
+        }
+
+        async function QuenCheckOut() {
+            let ngayChamCong = document.getElementById("ngayChamCong").value;
+            const token = localStorage.getItem("token");
+            let liDo = document.getElementById("liDo").value;
+
+            const response = await fetch(`https://localhost:7219/api/NhanVien/QuenCheckOut?ngayChamCong=${ngayChamCong}&LiDo=${liDo}`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                let result = await response.text();
+                console.error("Lỗi Server:", result);
+                alert(result);
+                closeForm();
+            } else {
+                alert("Gửi thành công!");
+                closeForm();
+            }
+        }
+
+        function formNghiPhep() {
+            document.getElementById("overlay").style.display = "block";
+            document.getElementById("formLiDoNghi").style.display = "block";
+        }
+
+        async function nghiPhep() {
+            let ngayChamCong = document.getElementById("ngayChamCong").value;
+            const token = localStorage.getItem("token");
+            let liDo = document.getElementById("liDo").value;
+
+            const response = await fetch(`https://localhost:7219/api/NhanVien/XinNghiPhep?ngayChamCong=${ngayChamCong}&LiDo=${liDo}`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                let result = await response.text();
+                console.error("Lỗi Server:", result);
+                alert(result);
+                closeForm();
+            } else {
+                alert("Gửi thành công!");
+                closeForm();
+            }
+        }
+
+        function closeForm() {
+            document.getElementById("overlay").style.display = "none";
+            document.getElementById("formLiDo").style.display = "none";
+            document.getElementById("formLiDoNghi").style.display = "none";
+            document.getElementById("liDo").value = "";
         }
 
         renderCalendar()
