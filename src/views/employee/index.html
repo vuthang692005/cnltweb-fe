@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quyển Lịch</title>
+    <link rel="stylesheet" href="/public/css/employee.css">
+</head>
+
+<body>
+    <header>
+        <div class="left-container">
+            <a href="index.html" class="logo"><img src="j97.jpg" class="logo"></a>
+            <div><a href="index.html" style="text-decoration: none; color: #000;">Lịch làm việc</a></div>
+            <div><a href="tangCa.html" style="text-decoration: none; color: #000;">Thông tin phê duyệt</a></div>
+        </div>
+        <div class="right-container">
+            <div class="icon-container" id="menuButton">
+                &#128100;
+            </div>
+            <ul class="dropdown-menu" id="menuDropdown">
+                <li><a href="thongTinCaNhan.html" style="text-decoration: none; color: #000;">Thông tin cá nhân</a>
+                </li>
+                <li><a onclick="logout()" style="color: red;">Đăng xuất</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="body">
+            <h1 style="text-align: center; padding-bottom: 30px; padding-top: 20px">Chấm Công</h1>
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <div class="formcong">
+                    <div class="form-group">
+                        <label>Ngày Chấm Công:</label>
+                        <input type="text" id="ngayChamCong" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Giờ Vào:</label>
+                        <input type="text" id="gioVao" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Giờ Ra:</label>
+                        <input type="text" id="gioRa" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Tình Trạng:</label>
+                        <input type="text" id="tinhTrang" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Tăng Ca:</label>
+                        <input type="text" id="tangCa" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Số Giờ Tăng Ca:</label>
+                        <input type="text" id="soGioTangCa" readonly>
+                    </div>
+
+                </div>
+                <div class="buttons">
+                    <button id="checkIn" onclick="checkIn()">Check In</button>
+                    <button id="checkOut" onclick="checkOut()">Check Out</button>
+                    <button id="dkTangCa" onclick="dkTangCa()">Đăng kí tăng ca</button>
+                    <button id="quenCheckOut" onclick="formQuenCheckOut()">Quên check-out</button>
+                    <button id="quenCheckOut" onclick="formNghiPhep()">Xin nghỉ phép</button>
+                </div>
+            </div>
+        </div>
+        <div class="calendar">
+            <div class="header">
+                <button onclick="prevMonth()">❮</button>
+                <span class="monthYear" id="monthYear"></span>
+                <button onclick="nextMonth()">❯</button>
+            </div>
+            <div class="days">
+                <div class="day">CN</div>
+                <div class="day">T2</div>
+                <div class="day">T3</div>
+                <div class="day">T4</div>
+                <div class="day">T5</div>
+                <div class="day">T6</div>
+                <div class="day">T7</div>
+            </div>
+            <div class="dates" id="dates"></div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="closeForm()"></div>
+
+    <div class="formLiDo" id="formLiDoNghi">
+        <a class="close-btn" onclick="closeForm()">X</a>
+        <h3>Lí do xin nghỉ</h3>
+        <form>
+            <div class="form-group1">
+                <textarea id="liDo" name="liDo" rows="6" placeholder="Nhập lý do..." required></textarea>
+            </div>
+            <button class="btluu" type="button" onclick="nghiPhep()">Gửi</button>
+        </form>
+    </div>
+
+    <div class="formLiDo" id="formLiDo">
+        <a class="close-btn" onclick="closeForm()">X</a>
+        <h3>Lí do quên check-out</h3>
+        <form>
+            <div class="form-group1">
+                <textarea id="liDo" name="liDo" rows="6" placeholder="Nhập lý do..." required></textarea>
+            </div>
+            <button class="btluu" type="button" onclick="QuenCheckOut()">Gửi</button>
+        </form>
+    </div>
+
+    <script src="/public/js/employee.js"></script>
+</body>

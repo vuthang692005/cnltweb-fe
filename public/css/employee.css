@@ -1,0 +1,292 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #f4f4f4;
+  height: 100vh;
+}
+
+header {
+  background-color: white;
+  width: 100%;
+  height: 10%;
+  padding: 0px 20px;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+  height: 100%;
+  width: auto;
+  padding-right: 15px;
+}
+
+.menu {
+  height: 100%;
+  align-items: center;
+}
+
+.right-container {
+  display: flex;
+  align-items: center;
+}
+
+.icon-container {
+  width: 40px;
+  height: 40px;
+  background-color: #e0e0e0;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  margin-left: 20px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  background-color: white;
+  width: 200px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: none;
+  z-index: 1000;
+}
+
+.dropdown-menu.active {
+  display: block;
+}
+
+.dropdown-menu li {
+  list-style: none;
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd;
+}
+
+.dropdown-menu li:last-child {
+  border-bottom: none;
+}
+
+.dropdown-menu li:hover {
+  background-color: #f0f0f0;
+}
+
+.left-container {
+  display: flex;
+  align-items: center;
+}
+
+.left-container div {
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.left-container div:hover {
+  background-color: #7ad3ff;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  height: 90%;
+}
+
+.body {
+  width: 850px;
+  height: 450px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.calendar {
+  width: 350px;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.days,
+.dates {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.day,
+.date {
+  padding: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+}
+
+.date {
+  background: #eee;
+  border-radius: 5px;
+}
+
+button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.selector {
+  margin-top: 10px;
+  display: none;
+}
+
+.disabled {
+  pointer-events: none;
+}
+
+.check {
+  background: #007bff !important;
+  color: white;
+}
+
+.monthYear {
+  padding-left: 65px;
+  padding-right: 65px;
+}
+
+.formcong {
+  background: white;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  width: 550px;
+}
+
+.form-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.form-group label {
+  width: 35%;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+  width: 75%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  padding-left: 20px;
+}
+
+.buttons button {
+  padding: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  height: 50px;
+  width: 100px;
+}
+
+.formLiDo {
+  width: 500px;
+  padding: 20px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  display: none;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+
+.formLiDo h3 {
+  font-size: 25px;
+  font-weight: bold;
+  padding-bottom: 30px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-group1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-group1 textarea {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.btluu {
+  width: 100%;
+  padding: 10px;
+  background-color: blue;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.close-btn {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  font-weight: bold;
+  color: black;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.close-btn:hover {
+  color: red;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 998;
+}

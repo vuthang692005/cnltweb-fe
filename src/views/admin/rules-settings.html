@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quyển Lịch</title>
+    <link rel="stylesheet" href="/public/css/rules-settings.css">
+</head>
+
+<body>
+    <header>
+        <div class="left-container">
+            <a href="index.html" class="logo"><img src="/public/images/logo-main.jpg" class="logo"></a>
+            <div><a href="index.html" style="text-decoration: none; color: #000;">Quản lí lịch làm việc</a></div>
+            <div><a href="employeeMgmt.html" style="text-decoration: none; color: #000;">Quản lí nhân viên</a></div>
+            <div><a href="approveMgmt.html" style="text-decoration: none; color: #000;">Thông tin phê duyệt</a></div>
+        </div>
+        <div class="right-container">
+            <div class="icon-container" id="menuButton">
+                &#128100;
+            </div>
+            <ul class="dropdown-menu" id="menuDropdown">
+                <li><a href="#" style="text-decoration: none; color: #000;">Thiết lập quy định</a>
+                </li>
+                <li><a onclick="logout()" style="color: red;">Đăng xuất</a></li>
+            </ul>
+        </div>
+        <div class="formsua" id="formsua">
+            <h3>Quy định</h3>
+            <form id="editForm">
+                <div class="form-group">
+                    <label>Phạt đi muộn:</label>
+                    <input type="text" id="diMuon" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Phạt nghỉ quá phép:</label>
+                    <input type="text" id="nghiQuaPhep" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Phạt nghỉ không phép:</label>
+                    <input type="text" id="nghiKhongPhep" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Thưởng tăng ca:</label>
+                    <input type="text" id="tangCa" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Số ngày nghỉ phép 1 tháng:</label>
+                    <input type="text" id="soNgayPhepMotThang" readonly>
+                </div>
+
+                <button class="btluu" type="button" onclick="Sua()" id="sua" style="display: block;">Sửa</button>
+                <button class="btluu" type="button" onclick="Luu()" id="luu" style="display: none; background-color: rgb(0, 171, 0);">Lưu</button>
+            </form>
+        </div>
+    </header>
+
+    <script src="/public/js/rules-settings.js"></script>
+
+</body>

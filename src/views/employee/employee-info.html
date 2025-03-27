@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quyển Lịch</title>
+    <link rel="stylesheet" href="/public/css/employee-info.css">
+</head>
+
+<body>
+    <header>
+        <div class="left-container">
+            <a href="index.html" class="logo"><img src="j97.jpg" class="logo"></a>
+            <div><a href="index.html" style="text-decoration: none; color: #000;">Lịch làm việc</a></div>
+            <div><a href="tangCa.html" style="text-decoration: none; color: #000;">Thông tin phê duyệt</a></div>
+        </div>
+        <div class="right-container">
+            <div class="icon-container" id="menuButton">
+                &#128100;
+            </div>
+            <ul class="dropdown-menu" id="menuDropdown">
+                <li><a href="thongTinCaNhan.html" style="text-decoration: none; color: #000;">Thông tin cá nhân</a></li>
+                <li><a onclick="logout()" style="color: red;">Đăng xuất</a></li>
+            </ul>
+        </div>
+    </header>
+    <div class="formthongtin" id="formsua">
+        <h3>Thông tin cá nhân</h3>
+        <div class="formflex">
+            <form>
+                <div class="form-group">
+                    <label>Mã NV:</label>
+                    <input type="text" id="ID" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Họ tên:</label>
+                    <input type="text" id="hoTen" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Ngày sinh:</label>
+                    <input type="text" id="ngaySinh" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Giới tính:</label>
+                    <input type="text" id="gioiTinh" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Phòng ban:</label>
+                    <input type="text" id="phongBan" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Chức vụ:</label>
+                    <input type="text" id="chucVu" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Ngày vào làm:</label>
+                    <input type="text" id="ngayVaoLam" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Lương cơ bản:</label>
+                    <input type="text" id="luongCoBan" readonly>
+                </div>
+            </form>
+            <div>
+                <img src="Screenshot 2025-03-19 201912.png" style="width: 240px; margin-left: 25px;">
+                <form id="editForm"
+                    style="border: 1.4px solid black; padding: 10px; border-radius: 10px; margin-left: 30px;">
+                    <h2>Thông tin liên hệ</h2>
+
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="text" id="Email" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>SĐT:</label>
+                        <input type="text" id="SDT" readonly>
+                    </div>
+
+                    <button class="btluu" type="button" onclick="Sua()" id="sua" style="display: block;">Sửa</button>
+                    <button class="btluu" type="button" onclick="Luu()" id="luu"
+                        style="display: none; background-color: rgb(0, 171, 0);">Lưu</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/public/js/employee-info.js"></script>
+</body>

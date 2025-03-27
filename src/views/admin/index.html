@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quyển Lịch</title>
+    <link rel="stylesheet" href="/public/css/admin.css">
+</head>
+
+<body>
+    <header>
+        <div class="left-container">
+            <a href="#" class="logo"><img src="/public/images/logo-main.jpg" class="logo"></a>
+            <div><a href="#" style="text-decoration: none; color: #000;">Quản lí lịch làm việc</a></div>
+            <div><a href="employeeMgmt.html" style="text-decoration: none; color: #000;">Quản lí nhân viên</a></div>
+            <div><a href="approveMgmt.html" style="text-decoration: none; color: #000;">Thông tin phê duyệt</a></div>
+        </div>
+        <div class="right-container">
+            <div class="icon-container" id="menuButton">
+                &#128100;
+            </div>
+
+            <ul class="dropdown-menu" id="menuDropdown">
+                <li><a href="rules-settings.html" style="text-decoration: none; color: #000;">Thiết lập quy định</a>
+                </li>
+                <li><a onclick="logout()" style="color: red;">Đăng xuất</a></li>
+            </ul>
+        </div>
+    </header>
+    <div class="container">
+        <div class="overlay" id="overlay" onclick="closeForm()"></div>
+        <div class="formsua" id="formsua">
+            <a class="close-btn" onclick="closeForm()">X</a>
+            <h3>Chỉnh sửa thông tin</h3>
+            <form id="editForm">
+                <div class="form-group">
+                    <label>Mã CC:</label>
+                    <input type="text" id="MaCC" readonly style="color: #7c7c7c;">
+                </div>
+                <div class="form-group">
+                    <label>Tình trạng:</label>
+                    <select id="editTinhTrang">
+                        <option value="">NULL</option>
+                        <option>Có mặt</option>
+                        <option>Muộn</option>
+                        <option>Nghỉ phép</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Tăng ca:</label>
+                    <select id="editTangCa">
+                        <option value="True">Có</option>
+                        <option value="False">Không</option>
+                    </select>
+                </div>
+
+                <button class="btluu" type="button" onclick="luuChinhSua()">Lưu</button>
+            </form>
+        </div>
+        <div class="body"></div>
+        <div class="calendar">
+            <div class="menu">
+                <div class="button" onclick="chiTiet()">Chi tiết</div>
+                <div class="button" onclick="them()">Thêm</div>
+                <div class="button" onclick="xoa()">Xóa</div>
+            </div>
+            <div class="header">
+                <button onclick="prevMonth()">❮</button>
+                <span class="monthYear" id="monthYear"></span>
+                <button onclick="nextMonth()">❯</button>
+            </div>
+
+            <div class="days">
+                <div class="day">CN</div>
+                <div class="day">T2</div>
+                <div class="day">T3</div>
+                <div class="day">T4</div>
+                <div class="day">T5</div>
+                <div class="day">T6</div>
+                <div class="day">T7</div>
+            </div>
+            <div class="dates" id="dates"></div>
+            <div class="dates" id="dates1"></div>
+            <div class="dates" id="dates2"></div>
+            <button id="them" onclick="submitSelectedDates()" style="background-color: rgb(0, 171, 0);">Thêm</button>
+            <button id="xoa" onclick="deleteSelectedDates()" style="background-color: red;">Xóa</button>
+        </div>
+    </div>
+
+    <script src="/public/js/admin.js"></script>
+</body>
+
+</html>

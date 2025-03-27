@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quyển Lịch</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="/public/css/approveMgmt.css">
+</head>
+
+<body>
+    <header>
+        <div class="left-container">
+            <a href="index.html" class="logo"><img src="/public/images/logo-main.jpg" class="logo"></a>
+            <div><a href="index.html" style="text-decoration: none; color: #000;">Quản lí lịch làm việc</a></div>
+            <div><a href="employeeMgmt.html" style="text-decoration: none; color: #000;">Quản lí nhân viên</a></div>
+            <div><a href="#" style="text-decoration: none; color: #000;">Thông tin phê duyệt</a></div>
+        </div>
+        <div class="right-container">
+            <div class="icon-container" id="menuButton">
+                &#128100;
+            </div>
+            <ul class="dropdown-menu" id="menuDropdown">
+                <li><a href="rules-settings.html" style="text-decoration: none; color: #000;">Thiết lập quy định</a></li>
+                <li><a onclick="logout()" style="color: red;">Đăng xuất</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat-item green">
+                <i class="fa-solid fa-clock"></i>
+                <span>Tăng ca chờ duyệt</span>
+            </div>
+            <div class="stat-item blue">
+                <i class="fa-solid fa-clock"></i>
+                <span>Quên check-out chờ duyệt</span>
+            </div>
+            <div class="stat-item yellow">
+                <i class="fa-solid fa-users"></i>
+                <span>Nghỉ phép chờ duyệt</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="thongTin">
+        <h2>Danh sách tăng ca chờ duyệt</h2>
+        <hr style=" border: 1px solid #ddd; margin-top: 20px;">
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="fetchDangKyTangCaCD()">Chờ duyệt</button>
+            <button class="tab" onclick="fetchDangKyTangCaDD()">Đã duyệt</button>
+            <button class="tab" onclick="fetchDangKyTangCaTC()">Từ chối</button>
+        </div>
+
+        <!-- Bảng dữ liệu -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Ngày tăng ca</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="tangCaTable"></tbody>
+        </table>
+    </div>
+
+    <div class="thongTin">
+        <h2>Danh sách quên check-out chờ duyệt</h2>
+        <hr style=" border: 1px solid #ddd; margin-top: 20px;">
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab1 active" onclick="fetchQuenCheckOutCD()">Chờ duyệt</button>
+            <button class="tab1" onclick="fetchQuenCheckOutDD()">Đã duyệt</button>
+            <button class="tab1" onclick="fetchQuenCheckOutTC()">Từ chối</button>
+        </div>
+
+        <!-- Bảng dữ liệu -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Ngày quên</th>
+                    <th>Lí do</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="quenCheckOutTable"></tbody>
+        </table>
+    </div>
+
+    <div class="thongTin">
+        <h2>Danh sách nghỉ phép chờ duyệt</h2>
+        <hr style=" border: 1px solid #ddd; margin-top: 20px;">
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab2 active" onclick="fetchNghiPhepCD()">Chờ duyệt</button>
+            <button class="tab2" onclick="fetchNghiPhepDD()">Đã duyệt</button>
+            <button class="tab2" onclick="fetchNghiPhepTC()">Từ chối</button>
+        </div>
+
+        <!-- Bảng dữ liệu -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Ngày nghỉ phép</th>
+                    <th>Lí do</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="nghiPhepTable"></tbody>
+        </table>
+    </div>
+
+    <script src="/public/js/approveMgmt.js"></script>
+</body>
