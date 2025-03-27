@@ -362,6 +362,7 @@
             <a href="index.html" class="logo"><img src="j97.jpg" class="logo"></a>
             <div><a href="index.html" style="text-decoration: none; color: #000;">Quản lí lịch làm việc</a></div>
             <div><a href="qlNhanVien.html" style="text-decoration: none; color: #000;">Quản lí nhân viên</a></div>
+            <div><a href="qlPheDuyet.html" style="text-decoration: none; color: #000;">Thông tin phê duyệt</a></div>
         </div>
         <div class="right-container">
             <div class="icon-container" id="menuButton">
@@ -513,6 +514,7 @@
         let totalPages = 1;
 
         async function loadNhanVien(page) {
+            const token = localStorage.getItem("token");
             currentPage = page;
             let maNhanVien = document.getElementById("maNhanVien").value;
             let hoTen = document.getElementById("hoTen").value;
@@ -526,7 +528,13 @@
             if (chucvu) url += `&chucVu=${chucvu}`;
 
             try {
-                const response = await fetch(url);
+                const response = await fetch(url,{
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`, // Đính kèm token trong header
+                        "Content-Type": "application/json"
+                    }
+                });
                 if (!response.ok) throw new Error("Không tìm thấy dữ liệu");
                 const data = await response.json();
 
@@ -575,6 +583,7 @@
             let maPhongBan = document.getElementById("phongBan2").value;
             let chucVu = document.getElementById("ChucVu").value.trim();
             let luongCoBan = document.getElementById("Luong").value.trim();
+            const token = localStorage.getItem("token");
 
             // Kiểm tra dữ liệu không được trống
             if (!hoTen || !ngaySinh || !gioiTinh || !soDienThoai || !email || !maPhongBan || !chucVu || !luongCoBan) {
@@ -619,6 +628,7 @@
                 let response = await fetch("https://localhost:7219/api/admin/nhanvien", {
                     method: "POST",
                     headers: {
+                        "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify(nhanVienDto)
@@ -671,6 +681,7 @@
             let tenPhongBan = document.getElementById("phongBan").value;
             let chucVu = document.getElementById("chucVu").value;
             let luong = document.getElementById("luong").value;
+            const token = localStorage.getItem("token");
 
             if (!MaNV) {
                 alert("Không có mã nhân viên!");
@@ -699,6 +710,7 @@
                 let response = await fetch(`https://localhost:7219/api/admin/nhanvien/${MaNV}`, {
                     method: "PUT",
                     headers: {
+                        "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify(requestData)
@@ -723,10 +735,15 @@
         }
 
         async function xoa(maNhanVien) {
+            const token = localStorage.getItem("token");
             if (confirm("Bạn có chắc chắn muốn xóa nhân viên này?")) {
                 try {
                     const response = await fetch(`https://localhost:7219/api/admin/nhanvien/${maNhanVien}`, {
-                        method: "DELETE"
+                        method: "DELETE",
+                        headers: {
+                        "Authorization": `Bearer ${token}`, // Đính kèm token trong header
+                        "Content-Type": "application/json"
+                    }
                     });
 
                     if (!response.ok) throw new Error("Xóa thất bại!");
@@ -757,6 +774,11 @@
             document.getElementById("formsua").style.display = "none";
             document.getElementById("formThem").style.display = "none";
             currentRow = null;
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '../login.html';
         }
 
         loadNhanVien(1);
