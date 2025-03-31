@@ -98,5 +98,9 @@ async function Luu() {
     alert("Cập nhật thành công!");
     location.reload();
   }
+}
 
+function logout() {
+  localStorage.clear();
+  window.location.href = '/src/views/auth/login.html';
 }

@@ -420,6 +420,12 @@ async function huyNghiPhep(ngayLam) {
     console.error("Lỗi:", error);
   }
 }
+
+function logout() {
+  localStorage.clear();
+  window.location.href = '/src/views/auth/login.html';
+}
+
 fetchQuenCheckOutCD();
 fetchDangKyTangCaCD();
 fetchNghiPhepCD();

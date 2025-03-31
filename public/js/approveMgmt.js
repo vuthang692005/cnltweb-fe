@@ -30,7 +30,7 @@ async function fetchDangKyTangCaCD() {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch("https://localhost:7219/api/NhanVien/ChoDuyetDKTangCa", {
+    const response = await fetch("https://localhost:7219/api/admin/ChoDuyetDKTangCa", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -48,15 +48,20 @@ async function fetchDangKyTangCaCD() {
     data.forEach(item => {
       const row = document.createElement("tr");
       row.innerHTML = `
+                    <td>${item.maNhanVien}</td>
+                    <td>${item.hoTen}</td>
                     <td class="ngayLam">${new Date(item.ngayChamCong).toLocaleDateString()}</td>
                     <td>${item.tinhTrang}</td>
-                    <td style="color:red; cursor:pointer;" onclick="huyDangKyTangCa('${item.ngayChamCong}')">Hủy</td>
+                    <td>
+                          <a style="cursor: pointer; color: white; background-color:#007BFF; padding: 6px; border-radius: 5px;" onclick="DuyetDKTangCa('${item.maNhanVien}', '${item.ngayChamCong}')">Duyệt</a>
+                          <a style="cursor: pointer; color: white; background-color:red; padding: 6px; border-radius: 5px;" onclick="TuChoiDKTangCa('${item.maNhanVien}', '${item.ngayChamCong}')">Từ chối</a>
+                    </td>
                 `;
       tableBody.appendChild(row);
     });
   } catch (error) {
     console.error("Lỗi khi lấy dữ liệu:", error);
-    document.getElementById("tangCaTable").innerHTML = "<tr><td colspan='2'>Không có dữ liệu</td></tr>";
+    document.getElementById("tangCaTable").innerHTML = "<tr><td colspan='5'>Không có dữ liệu</td></tr>";
   }
 }
 
@@ -64,7 +69,7 @@ async function fetchDangKyTangCaDD() {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch("https://localhost:7219/api/NhanVien/DaDuyetDKTangCa", {
+    const response = await fetch("https://localhost:7219/api/admin/DaDuyetDKTangCa", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -82,14 +87,19 @@ async function fetchDangKyTangCaDD() {
     data.forEach(item => {
       const row = document.createElement("tr");
       row.innerHTML = `
+                    <td>${item.maNhanVien}</td>
+                    <td>${item.hoTen}</td>
                     <td class="ngayLam">${new Date(item.ngayChamCong).toLocaleDateString()}</td>
                     <td>${item.tinhTrang}</td>
+                    <td>
+                          <a style="cursor: pointer; color: white; background-color:red; padding: 6px; border-radius: 5px;" onclick="TuChoiDKTangCa('${item.maNhanVien}', '${item.ngayChamCong}')">Từ chối</a>
+                    </td>
                 `;
       tableBody.appendChild(row);
     });
   } catch (error) {
     console.error("Lỗi khi lấy dữ liệu:", error);
-    document.getElementById("tangCaTable").innerHTML = "<tr><td colspan='2'>Không có dữ liệu</td></tr>";
+    document.getElementById("tangCaTable").innerHTML = "<tr><td colspan='5'>Không có dữ liệu</td></tr>";
   }
 }
 
@@ -97,7 +107,7 @@ async function fetchDangKyTangCaTC() {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch("https://localhost:7219/api/NhanVien/TuChoiDKTangCa", {
+    const response = await fetch("https://localhost:7219/api/admin/TuChoiDKTangCa", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -115,25 +125,28 @@ async function fetchDangKyTangCaTC() {
     data.forEach(item => {
       const row = document.createElement("tr");
       row.innerHTML = `
+                    <td>${item.maNhanVien}</td>
+                    <td>${item.hoTen}</td>
                     <td class="ngayLam">${new Date(item.ngayChamCong).toLocaleDateString()}</td>
                     <td>${item.tinhTrang}</td>
+                    <td>
+                          <a style="cursor: pointer; color: white; background-color:#007BFF; padding: 6px; border-radius: 5px;" onclick="DuyetDKTangCa('${item.maNhanVien}', '${item.ngayChamCong}')">Duyệt</a>
+                    </td>
                 `;
       tableBody.appendChild(row);
     });
   } catch (error) {
     console.error("Lỗi khi lấy dữ liệu:", error);
-    document.getElementById("tangCaTable").innerHTML = "<tr><td colspan='2'>Không có dữ liệu</td></tr>";
+    document.getElementById("tangCaTable").innerHTML = "<tr><td colspan='5'>Không có dữ liệu</td></tr>";
   }
 }
 
-async function huyDangKyTangCa(ngayLam) {
-  if (!confirm("Bạn có chắc chắn muốn hủy đăng ký tăng ca này không?")) {
-    return;
-  }
+async function DuyetDKTangCa(maNhanVien, ngayLam) {
   const token = localStorage.getItem("token");
+  let activeTab = document.querySelector(".tab.active");
   try {
-    const response = await fetch(`https://localhost:7219/api/NhanVien/XoaDKTangCa?ngayLam=${ngayLam}`, {
-      method: "DELETE",
+    const response = await fetch(`https://localhost:7219/api/admin/DuyetDKTC?maNhanVien=${maNhanVien}&ngayChamCong=${ngayLam}`, {
+      method: "PUT",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
         "Content-Type": "application/json"
@@ -147,7 +160,46 @@ async function huyDangKyTangCa(ngayLam) {
     }
 
     alert(message); // Hiển thị thông báo thành công
-    fetchDangKyTangCaCD();
+    if (activeTab.innerText === "Chờ duyệt") {
+      fetchDangKyTangCaCD();
+    }else if(activeTab.innerText === "Đã duyệt"){
+      fetchDangKyTangCaDD();
+    }else{
+      fetchDangKyTangCaTC();
+    }
+
+  } catch (error) {
+    alert("Lỗi: " + error.message);
+    console.error("Lỗi:", error);
+  }
+}
+
+async function TuChoiDKTangCa(maNhanVien, ngayLam) {
+  const token = localStorage.getItem("token");
+  let activeTab = document.querySelector(".tab.active");
+  try {
+    const response = await fetch(`https://localhost:7219/api/admin/TuChoiDKTC?maNhanVien=${maNhanVien}&ngayChamCong=${ngayLam}`, {
+      method: "PUT",
+      headers: {
+        "Authorization": `Bearer ${token}`, // Đính kèm token trong header
+        "Content-Type": "application/json"
+      }
+    });
+
+    const message = await response.text();
+
+    if (!response.ok) {
+      throw new Error(message);
+    }
+
+    alert(message); // Hiển thị thông báo thành công
+    if (activeTab.innerText === "Chờ duyệt") {
+      fetchDangKyTangCaCD();
+    }else if(activeTab.innerText === "Đã duyệt"){
+      fetchDangKyTangCaDD();
+    }else{
+      fetchDangKyTangCaTC();
+    }
 
   } catch (error) {
     alert("Lỗi: " + error.message);
@@ -159,7 +211,7 @@ async function fetchQuenCheckOutCD() {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch(`https://localhost:7219/api/NhanVien/ChoDuyetQuenCO`, {
+    const response = await fetch(`https://localhost:7219/api/admin/ChoDuyetQCO`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -177,16 +229,21 @@ async function fetchQuenCheckOutCD() {
     data.forEach(item => {
       const row = document.createElement("tr");
       row.innerHTML = `
+                    <td>${item.maNhanVien}</td>
+                    <td>${item.hoTen}</td>
                     <td class="ngayLam">${new Date(item.ngayChamCong).toLocaleDateString()}</td>
                     <td>${item.liDo}</td>
                     <td>${item.tinhTrang}</td>
-                    <td style="color:red; cursor:pointer;" onclick="huyQuenCheckOut('${item.ngayChamCong}')">Hủy</td>
+                    <td>
+                          <a style="cursor: pointer; color: white; background-color:#007BFF; padding: 6px; border-radius: 5px;" onclick="DuyetQCO('${item.maNhanVien}', '${item.ngayChamCong}')">Duyệt</a>
+                          <a style="cursor: pointer; color: white; background-color:red; padding: 6px; border-radius: 5px;" onclick="TuChoiQCO('${item.maNhanVien}', '${item.ngayChamCong}')">Từ chối</a>
+                    </td>
                 `;
       tableBody.appendChild(row);
     });
   } catch (error) {
     console.error("Lỗi khi lấy dữ liệu:", error);
-    document.getElementById("quenCheckOutTable").innerHTML = "<tr><td colspan='3'>Không có dữ liệu</td></tr>";
+    document.getElementById("quenCheckOutTable").innerHTML = "<tr><td colspan='6'>Không có dữ liệu</td></tr>";
   }
 }
 
@@ -194,7 +251,7 @@ async function fetchQuenCheckOutDD() {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch(`https://localhost:7219/api/NhanVien/DaDuyetQuenCO`, {
+    const response = await fetch(`https://localhost:7219/api/admin/DaDuyetQCO`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -212,15 +269,20 @@ async function fetchQuenCheckOutDD() {
     data.forEach(item => {
       const row = document.createElement("tr");
       row.innerHTML = `
+                    <td>${item.maNhanVien}</td>
+                    <td>${item.hoTen}</td>
                     <td class="ngayLam">${new Date(item.ngayChamCong).toLocaleDateString()}</td>
                     <td>${item.liDo}</td>
                     <td>${item.tinhTrang}</td>
+                    <td>
+                          <a style="cursor: pointer; color: white; background-color:red; padding: 6px; border-radius: 5px;" onclick="TuChoiQCO('${item.maNhanVien}', '${item.ngayChamCong}')">Từ chối</a>
+                    </td>
                 `;
       tableBody.appendChild(row);
     });
   } catch (error) {
     console.error("Lỗi khi lấy dữ liệu:", error);
-    document.getElementById("quenCheckOutTable").innerHTML = "<tr><td colspan='3'>Không có dữ liệu</td></tr>";
+    document.getElementById("quenCheckOutTable").innerHTML = "<tr><td colspan='6'>Không có dữ liệu</td></tr>";
   }
 }
 
@@ -228,7 +290,7 @@ async function fetchQuenCheckOutTC() {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch(`https://localhost:7219/api/NhanVien/TuChoiQuenCO`, {
+    const response = await fetch(`https://localhost:7219/api/admin/TuChoiQCO`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -246,27 +308,29 @@ async function fetchQuenCheckOutTC() {
     data.forEach(item => {
       const row = document.createElement("tr");
       row.innerHTML = `
+                    <td>${item.maNhanVien}</td>
+                    <td>${item.hoTen}</td>
                     <td class="ngayLam">${new Date(item.ngayChamCong).toLocaleDateString()}</td>
                     <td>${item.liDo}</td>
                     <td>${item.tinhTrang}</td>
+                    <td>
+                          <a style="cursor: pointer; color: white; background-color:#007BFF; padding: 6px; border-radius: 5px;" onclick="DuyetQCO('${item.maNhanVien}', '${item.ngayChamCong}')">Duyệt</a>
+                    </td>
                 `;
       tableBody.appendChild(row);
     });
   } catch (error) {
     console.error("Lỗi khi lấy dữ liệu:", error);
-    document.getElementById("quenCheckOutTable").innerHTML = "<tr><td colspan='3'>Không có dữ liệu</td></tr>";
+    document.getElementById("quenCheckOutTable").innerHTML = "<tr><td colspan='6'>Không có dữ liệu</td></tr>";
   }
 }
 
-async function huyQuenCheckOut(ngayLam) {
-  if (!confirm("Bạn có chắc chắn muốn hủy quên check-out này không?")) {
-    return;
-  }
+async function DuyetQCO(maNhanVien, ngayLam) {
   const token = localStorage.getItem("token");
-
+  let activeTab = document.querySelector(".tab1.active");
   try {
-    const response = await fetch(`https://localhost:7219/api/NhanVien/XoaQuenCO?ngayLam=${ngayLam}`, {
-      method: "DELETE",
+    const response = await fetch(`https://localhost:7219/api/admin/DuyetQCO?maNhanVien=${maNhanVien}&ngayChamCong=${ngayLam}`, {
+      method: "PUT",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
         "Content-Type": "application/json"
@@ -280,8 +344,47 @@ async function huyQuenCheckOut(ngayLam) {
     }
 
     alert(message); // Hiển thị thông báo thành công
-    fetchQuenCheckOutCD();
+    if (activeTab.innerText === "Chờ duyệt") {
+      fetchQuenCheckOutCD();
+    }else if(activeTab.innerText === "Đã duyệt"){
+      fetchQuenCheckOutDD();
+    }else{
+      fetchQuenCheckOutTC();
+    }
 
+  } catch (error) {
+    alert("Lỗi: " + error.message);
+    console.error("Lỗi:", error);
+  }
+}
+
+async function TuChoiQCO(maNhanVien, ngayLam) {
+  const token = localStorage.getItem("token");
+  let activeTab = document.querySelector(".tab1.active");
+
+  try {
+    const response = await fetch(`https://localhost:7219/api/admin/TuChoiQCO?maNhanVien=${maNhanVien}&ngayChamCong=${ngayLam}`, {
+      method: "PUT",
+      headers: {
+        "Authorization": `Bearer ${token}`, // Đính kèm token trong header
+        "Content-Type": "application/json"
+      }
+    });
+
+    const message = await response.text();
+
+    if (!response.ok) {
+      throw new Error(message);
+    }
+
+    alert(message); // Hiển thị thông báo thành công
+    if (activeTab.innerText === "Chờ duyệt") {
+      fetchQuenCheckOutCD();
+    }else if(activeTab.innerText === "Đã duyệt"){
+      fetchQuenCheckOutDD();
+    }else{
+      fetchQuenCheckOutTC();
+    }
   } catch (error) {
     alert("Lỗi: " + error.message);
     console.error("Lỗi:", error);
@@ -292,7 +395,7 @@ async function fetchNghiPhepCD() {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch(`https://localhost:7219/api/NhanVien/ChoDuyetNghiPhep`, {
+    const response = await fetch(`https://localhost:7219/api/admin/ChoDuyetNghiPhep`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -310,11 +413,15 @@ async function fetchNghiPhepCD() {
     data.forEach(item => {
       const row = document.createElement("tr");
       row.innerHTML = `
+                    <td>${item.maNhanVien}</td>
+                    <td>${item.hoTen}</td>
                     <td class="ngayLam">${new Date(item.ngayChamCong).toLocaleDateString()}</td>
                     <td>${item.liDo}</td>
                     <td>${item.tinhTrang}</td>
-                    <td style="color:red; cursor:pointer;" onclick="huyNghiPhep('${item.ngayChamCong}')">Hủy</td>
-                `;
+                    <td>
+                          <a style="cursor: pointer; color: white; background-color:#007BFF; padding: 6px; border-radius: 5px;" onclick="DuyetNghiPhep('${item.maNhanVien}', '${item.ngayChamCong}')">Duyệt</a>
+                          <a style="cursor: pointer; color: white; background-color:red; padding: 6px; border-radius: 5px;" onclick="TuChoiNghiPhep('${item.maNhanVien}', '${item.ngayChamCong}')">Từ chối</a>
+                    </td>                `;
       tableBody.appendChild(row);
     });
   } catch (error) {
@@ -327,7 +434,7 @@ async function fetchNghiPhepDD() {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch(`https://localhost:7219/api/NhanVien/DaDuyetNghiPhep`, {
+    const response = await fetch(`https://localhost:7219/api/admin/DaDuyetNghiPhep`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -345,9 +452,14 @@ async function fetchNghiPhepDD() {
     data.forEach(item => {
       const row = document.createElement("tr");
       row.innerHTML = `
+                    <td>${item.maNhanVien}</td>
+                    <td>${item.hoTen}</td>
                     <td class="ngayLam">${new Date(item.ngayChamCong).toLocaleDateString()}</td>
                     <td>${item.liDo}</td>
                     <td>${item.tinhTrang}</td>
+                    <td>
+                          <a style="cursor: pointer; color: white; background-color:red; padding: 6px; border-radius: 5px;" onclick="TuChoiNghiPhep('${item.maNhanVien}', '${item.ngayChamCong}')">Từ chối</a>
+                    </td> 
                 `;
       tableBody.appendChild(row);
     });
@@ -361,7 +473,7 @@ async function fetchNghiPhepTC() {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch(`https://localhost:7219/api/NhanVien/TuChoiNghiPhep`, {
+    const response = await fetch(`https://localhost:7219/api/admin/TuChoiNghiPhep`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -379,9 +491,14 @@ async function fetchNghiPhepTC() {
     data.forEach(item => {
       const row = document.createElement("tr");
       row.innerHTML = `
+                    <td>${item.maNhanVien}</td>
+                    <td>${item.hoTen}</td>
                     <td class="ngayLam">${new Date(item.ngayChamCong).toLocaleDateString()}</td>
                     <td>${item.liDo}</td>
                     <td>${item.tinhTrang}</td>
+                    <td>
+                          <a style="cursor: pointer; color: white; background-color:#007BFF; padding: 6px; border-radius: 5px;" onclick="DuyetNghiPhep('${item.maNhanVien}', '${item.ngayChamCong}')">Duyệt</a>
+                    </td> 
                 `;
       tableBody.appendChild(row);
     });
@@ -391,15 +508,12 @@ async function fetchNghiPhepTC() {
   }
 }
 
-async function huyNghiPhep(ngayLam) {
-  if (!confirm("Bạn có chắc chắn muốn hủy nghỉ phép này không?")) {
-    return;
-  }
+async function DuyetNghiPhep(maNhanVien, ngayLam) {
   const token = localStorage.getItem("token");
-
+  let activeTab = document.querySelector(".tab2.active");
   try {
-    const response = await fetch(`https://localhost:7219/api/NhanVien/XoaNghiPhep?ngayLam=${ngayLam}`, {
-      method: "DELETE",
+    const response = await fetch(`https://localhost:7219/api/admin/DuyetNghiPhep?maNhanVien=${maNhanVien}&ngayChamCong=${ngayLam}`, {
+      method: "PUT",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
         "Content-Type": "application/json"
@@ -413,12 +527,56 @@ async function huyNghiPhep(ngayLam) {
     }
 
     alert(message); // Hiển thị thông báo thành công
-    fetchNghiPhepCD();
+    if (activeTab.innerText === "Chờ duyệt") {
+      fetchQuenCheckOutCD();
+    }else if(activeTab.innerText === "Đã duyệt"){
+      fetchQuenCheckOutDD();
+    }else{
+      fetchQuenCheckOutTC();
+    }
 
   } catch (error) {
     alert("Lỗi: " + error.message);
     console.error("Lỗi:", error);
   }
+}
+
+async function TuChoiNghiPhep(maNhanVien, ngayLam) {
+  const token = localStorage.getItem("token");
+  let activeTab = document.querySelector(".tab2.active");
+
+  try {
+    const response = await fetch(`https://localhost:7219/api/admin/TuChoiNghiPhep?maNhanVien=${maNhanVien}&ngayChamCong=${ngayLam}`, {
+      method: "PUT",
+      headers: {
+        "Authorization": `Bearer ${token}`, // Đính kèm token trong header
+        "Content-Type": "application/json"
+      }
+    });
+
+    const message = await response.text();
+
+    if (!response.ok) {
+      throw new Error(message);
+    }
+
+    alert(message); // Hiển thị thông báo thành công
+    if (activeTab.innerText === "Chờ duyệt") {
+      fetchQuenCheckOutCD();
+    }else if(activeTab.innerText === "Đã duyệt"){
+      fetchQuenCheckOutDD();
+    }else{
+      fetchQuenCheckOutTC();
+    }
+  } catch (error) {
+    alert("Lỗi: " + error.message);
+    console.error("Lỗi:", error);
+  }
+}
+
+function logout() {
+  localStorage.clear();
+  window.location.href = '/src/views/auth/login.html';
 }
 fetchQuenCheckOutCD();
 fetchDangKyTangCaCD();

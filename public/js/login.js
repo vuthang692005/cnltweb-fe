@@ -10,16 +10,19 @@ async function Login() {
     body: JSON.stringify({ taiKhoan: TaiKhoan, matKhau: password })
   });
 
-  const data = await response.json();
+  
 
   if (response.ok) {
+    const data = await response.json();
     localStorage.setItem('token', data.token);
     if (data.role === 'Admin') {
       window.location.href = '/src/views/admin/index.html';
     } else if (data.role === 'NhanVien') {
-      window.location.href = '/src/views/admin/index.html';
+      window.location.href = '/src/views/employee/index.html';
     }
   } else {
-    alert('Đăng nhập thất bại: ' + data);
+    let result = await response.text();
+    console.error("Lỗi Server:", result);
+    alert(result);
   }
 }

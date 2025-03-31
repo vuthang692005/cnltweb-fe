@@ -93,5 +93,5 @@ async function Luu() {
 
 function logout() {
   localStorage.clear();
-  window.location.href = '../login.html';
+  window.location.href = '/src/views/auth/login.html';
 }

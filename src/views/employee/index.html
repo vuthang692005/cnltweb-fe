@@ -11,16 +11,16 @@
 <body>
     <header>
         <div class="left-container">
-            <a href="index.html" class="logo"><img src="j97.jpg" class="logo"></a>
+            <a href="index.html" class="logo"><img src="/public/images/logo-main.jpg" class="logo"></a>
             <div><a href="index.html" style="text-decoration: none; color: #000;">Lịch làm việc</a></div>
-            <div><a href="tangCa.html" style="text-decoration: none; color: #000;">Thông tin phê duyệt</a></div>
+            <div><a href="employee-requests.html" style="text-decoration: none; color: #000;">Thông tin phê duyệt</a></div>
         </div>
         <div class="right-container">
             <div class="icon-container" id="menuButton">
                 &#128100;
             </div>
             <ul class="dropdown-menu" id="menuDropdown">
-                <li><a href="thongTinCaNhan.html" style="text-decoration: none; color: #000;">Thông tin cá nhân</a>
+                <li><a href="employee-info.html" style="text-decoration: none; color: #000;">Thông tin cá nhân</a>
                 </li>
                 <li><a onclick="logout()" style="color: red;">Đăng xuất</a></li>
             </ul>
@@ -93,7 +93,7 @@
         <h3>Lí do xin nghỉ</h3>
         <form>
             <div class="form-group1">
-                <textarea id="liDo" name="liDo" rows="6" placeholder="Nhập lý do..." required></textarea>
+                <textarea id="liDo1" name="liDo" rows="6" placeholder="Nhập lý do..." required></textarea>
             </div>
             <button class="btluu" type="button" onclick="nghiPhep()">Gửi</button>
         </form>
@@ -104,7 +104,7 @@
         <h3>Lí do quên check-out</h3>
         <form>
             <div class="form-group1">
-                <textarea id="liDo" name="liDo" rows="6" placeholder="Nhập lý do..." required></textarea>
+                <textarea id="liDo2" name="liDo" rows="6" placeholder="Nhập lý do..." required></textarea>
             </div>
             <button class="btluu" type="button" onclick="QuenCheckOut()">Gửi</button>
         </form>

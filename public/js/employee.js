@@ -245,7 +245,7 @@ function formQuenCheckOut() {
 async function QuenCheckOut() {
   let ngayChamCong = document.getElementById("ngayChamCong").value;
   const token = localStorage.getItem("token");
-  let liDo = document.getElementById("liDo").value;
+  let liDo = document.getElementById("liDo2").value;
 
   const response = await fetch(`https://localhost:7219/api/NhanVien/QuenCheckOut?ngayChamCong=${ngayChamCong}&LiDo=${liDo}`, {
     method: "POST",
@@ -274,7 +274,7 @@ function formNghiPhep() {
 async function nghiPhep() {
   let ngayChamCong = document.getElementById("ngayChamCong").value;
   const token = localStorage.getItem("token");
-  let liDo = document.getElementById("liDo").value;
+  let liDo = document.getElementById("liDo1").value;
 
   const response = await fetch(`https://localhost:7219/api/NhanVien/XinNghiPhep?ngayChamCong=${ngayChamCong}&LiDo=${liDo}`, {
     method: "POST",
