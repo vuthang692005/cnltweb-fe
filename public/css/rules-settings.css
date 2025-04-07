@@ -1,37 +1,71 @@
+/* === Reset và Base Styles === */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
 }
 
 body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background: #f4f4f4;
-  height: 100vh;
+  background: #f0f2f5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
+/* === Header === */
 header {
-  background-color: white;
-  width: 100%;
-  height: 10%;
-  padding: 0px 20px;
+  background: white;
+  height: 70px;
+  padding: 0 2rem;
   display: flex;
   justify-content: space-between;
-  position: relative;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.logo {
-  height: 100%;
-  width: auto;
-  padding-right: 15px;
-}
-
-.menu {
-  height: 100%;
   align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
+
+.left-container {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.left-container a.logo img {
+  height: 50px;
+  transition: transform 0.3s ease;
+}
+
+.left-container a.logo:hover img {
+  transform: scale(1.05);
+}
+
+.left-container div {
+  padding: 0.8rem 1.2rem;
+  /* border-radius: 8px; */
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.left-container div::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: #007bff;
+  transition: width 0.3s ease;
+}
+
+.left-container div:hover::before {
+  width: 100%;
+}
+
+
+
+/* Right header */
 
 .right-container {
   display: flex;
@@ -58,12 +92,19 @@ header {
   width: 200px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  display: none;
   z-index: 1000;
+  /* Ẩn ban đầu và chuẩn bị cho animation */
+  max-height: 0;
+  overflow: hidden;
+  transform: translateY(-10px);
+  opacity: 0;
+  transition: all 0.3s ease;
 }
 
 .dropdown-menu.active {
-  display: block;
+  max-height: 500px; /* Giá trị lớn hơn chiều cao thực tế */
+  transform: translateY(0);
+  opacity: 1;
 }
 
 .dropdown-menu li {
@@ -71,6 +112,7 @@ header {
   padding: 10px;
   cursor: pointer;
   border-bottom: 1px solid #ddd;
+  transition: background-color 0.2s;
 }
 
 .dropdown-menu li:last-child {
@@ -81,75 +123,115 @@ header {
   background-color: #f0f0f0;
 }
 
-.left-container {
-  display: flex;
-  align-items: center;
-}
 
-.left-container div {
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
 
-.left-container div:hover {
-  background-color: #7ad3ff;
-}
 
 .formsua {
-  width: 500px;
-  padding: 20px;
+  width: 40%; /* Nới rộng form thêm chút */
+  padding: 25px;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  border: 1px solid #ffffff; /* Border nhẹ nhưng vẫn sắc nét */
 }
-
 
 .formsua h3 {
   text-align: center;
   font-size: 30px;
-  font-weight: bold;
-  padding-bottom: 30px;
+  font-weight: 700; /* Đậm hơn để nổi bật */
+  padding-bottom: 20px;
+  color: #000000; /* Màu chữ mạnh mẽ hơn */
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px; /* Tăng khoảng cách giữa các trường input */
 }
 
-.form-group {
+.form-group,
+.form-group1 {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
 }
 
-.form-group label {
-  width: 200px;
-  font-weight: bold;
+.form-group label,
+.form-group1 label {
+  flex: 0 0 40%; /* chiếm 40% chiều rộng hàng */
+  font-weight: 600;
+  color: #000000;
 }
 
 .form-group input,
-.form-group select {
-  flex: 1;
-  padding: 8px;
+.form-group select,
+.form-group1 input,
+.form-group1 select {
+  flex: 1; /* phần còn lại 60% */
+  padding: 12px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus{
+  border-color: #3498db; /* Màu focus sáng hơn, dễ nhận biết */
+  outline: none; 
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.6);
 }
 
 .btluu {
   width: 100%;
-  padding: 10px;
-  background-color: blue;
+  padding: 12px;
+  background-color: #007bff; /* Màu nền nút đẹp hơn, tươi tắn */
   color: white;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 600;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
+
+.btluu:hover {
+  background-color: #1d6fa5; /* Màu khi hover sẽ tối lại, tạo sự tương phản */
+}
+
+button:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.input-container {
+  position: relative;
+  width: 75%; /* Làm rộng thêm cho input */
+}
+
+.input-container input {
+  width: 100%;
+  padding-right: 40px;
+  font-size: 14px;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #555; /* Thay đổi màu sắc cho icon đẹp hơn */
+}
+
+.eye-icon:focus {
+  outline: none;
+}
+

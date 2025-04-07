@@ -2,7 +2,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Arial', sans-serif;
+  font-family: 'Roboto', 'Arial', sans-serif;
 }
 
 body {
@@ -10,23 +10,77 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f0f8ff;
+  background-image: url('/public/images/login-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top:.0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: -1;
 }
 
 .container {
   display: flex;
   flex-direction: column;
   width: 400px;
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  transform: translateY(0);
+  transition: all 0.3s ease-in-out;
+  position: relative;
+  overflow: hidden;
+  z-index: 10;
+  
+}
+
+.container:hover {
+  transform: translateY(-10px) scale(1.05); 
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3); 
+}
+
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  
+
 }
 
 h2 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   color: #007bff;
+  font-size: 28px;
+  font-weight: 700;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(to right, #007bff, #00c6ff);
+  border-radius: 3px;
 }
 
 form {
@@ -34,37 +88,183 @@ form {
   flex-direction: column;
 }
 
+/* Bổ sung vào CSS hiện có của bạn */
+
+
+
+
+
+/* Chỉ sửa đổi phần form-group và floating label, các phần khác giữ nguyên */
+
+/* Container cho form-group */
+.form-group {
+  position: relative;
+  margin-bottom: 20px;
+  background: linear-gradient(to bottom, #007bff, #00c6ff);
+  border-radius: 8px;
+}
+
+/* Style cho input bên trong form-group */
+.form-group input {
+  width: 100%;
+  padding: 16px 12px; /* Dùng padding đều để input luôn có kích thước ổn định */
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.8);
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+/* Khi input được focus */
+.form-group input:focus {
+  border-color: #1a73e8;
+}
+
+/* Style cho label ban đầu */
+.form-group label {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  padding: 0 4px;
+  pointer-events: none;
+  transition: all 0.2s ease-out;
+}
+
+/* Khi input có focus hoặc đã có giá trị (với placeholder rỗng) */
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label {
+  top: 0;
+  transform: translateY(-110%) scale(0.9);
+  color: #1a73e8;
+}
+
+
+
+
+
+.input-group {
+  position: relative;
+  margin-bottom: 25px;
+}
+
 label {
-  margin-bottom: 8px;
-  color: #333;
+  position: absolute;
+  top: 0;
+  left: 10px;
+  font-size: 12px;
+  color: #007bff;
+  /* background-color: rgba(255, 255, 255, 0.8); */
+  padding: 0 5px;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  transform: translateY(-50%);
 }
 
 input[type="text"],
 input[type="password"] {
-  padding: 10px;
-  margin-bottom: 16px;
+  width: 100%;
+  padding: 15px;
   border: 1px solid #ccc;
   border-radius: 8px;
   outline: none;
-  transition: border-color 0.3s;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.8);
 }
 
 input[type="text"]:focus,
 input[type="password"]:focus {
   border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+}
+
+
+
+
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%; /* Vị trí bắt đầu từ trái */
+    background-color: #007bff; /* Màu ban đầu */
+  }
+  50% {
+    background-position: 100% 50%; /* Vị trí di chuyển đến phải */
+    background-color: #00c6ff; 
+  }
+  100% {
+    background-position: 0% 50%; /* Tiếp tục di chuyển nữa */
+    background-color: #007bff;
+  }
 }
 
 button {
-  background-color: #007bff;
+  background: linear-gradient(to right, #007bff, #00c6ff);
+  background-size: 200% 100%; /* Đảm bảo gradient đủ lớn để di chuyển */
+  animation: gradientAnimation 3s infinite linear; /* Thời gian chuyển động */
   color: white;
-  padding: 12px;
+  padding: 16px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
-  transition: background-color 0.3s;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+  margin-top: 10px;
 }
 
+
 button:hover {
-  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
+}
+
+button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.4);
+}
+
+button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  /* background-color: rgba(255, 255, 255, 0.5); */
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: width 0.5s, height 0.5s, opacity 0.5s;
+}
+
+button:active::after {
+  width: 200px;
+  height: 200px;
+  opacity: 1;
+  transition: 0s;
+}
+
+
+
+
+/* Animation khi load trang */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.container {
+  animation: fadeIn 0.8s ease forwards;
 }

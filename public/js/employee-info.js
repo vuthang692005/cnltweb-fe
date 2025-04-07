@@ -1,8 +1,17 @@
 const menuButton = document.getElementById('menuButton');
 const menuDropdown = document.getElementById('menuDropdown');
 
-menuButton.addEventListener('click', () => {
+// Toggle menu khi click vào button
+menuButton.addEventListener('click', (event) => {
+  event.stopPropagation(); 
   menuDropdown.classList.toggle('active');
+});
+
+// Đóng menu khi click ra ngoài
+document.addEventListener('click', (event) => {
+  if (!menuDropdown.contains(event.target) && event.target !== menuButton) {
+    menuDropdown.classList.remove('active');
+  }
 });
 
 document.addEventListener("DOMContentLoaded", async function () {
@@ -12,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 async function loadForm() {
   const token = localStorage.getItem("token");
   try {
-    const response = await fetch("https://localhost:7219/api/NhanVien/nhanvien", {
+    const response = await fetch("http://thang689904-001-site1.jtempurl.com/api/NhanVien/nhanvien", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -79,7 +88,7 @@ async function Luu() {
   };
 
 
-  const response = await fetch("https://localhost:7219/api/NhanVien/nhanvien", {
+  const response = await fetch("http://thang689904-001-site1.jtempurl.com/api/NhanVien/nhanvien", {
     method: "PUT",
     headers: {
       "Authorization": `Bearer ${token}`,

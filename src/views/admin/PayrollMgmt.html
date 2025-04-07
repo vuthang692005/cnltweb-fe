@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quyển Lịch</title>
+    <link rel="stylesheet" href="/public/css/employeeMgmt.css">
+</head>
+
+<body>
+    <header>
+        <div class="left-container">
+            <a href="index.html" class="logo"><img src="/public/images/logo-main.jpg" class="logo"></a>
+            <div><a href="index.html" style="text-decoration: none; color: #000;">Quản lí lịch làm việc</a></div>
+            <div><a href="employeeMgmt.html" style="text-decoration: none; color: #000;">Quản lí nhân viên</a></div>
+            <div><a href="approveMgmt.html" style="text-decoration: none; color: #000;">Thông tin phê duyệt</a></div>
+            <div><a href="#" style="text-decoration: none; color: #000;">Quản lí lương</a></div>
+            <div><a href="rules-settings.html" style="text-decoration: none; color: #000;">Thiết lập quy định</a></div>
+        </div>
+        <div class="right-container">
+            <div class="icon-container" id="menuButton">
+                &#128100;
+            </div>
+            <ul class="dropdown-menu" id="menuDropdown">
+
+                <li><a href="ChangePassword.html" style="text-decoration: none; color: #000;">Đổi mật khẩu</a></li>
+                <li><a onclick="logout()" style="color: red;">Đăng xuất</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="search-box">
+            <input type="number" id="maNhanVien" placeholder="Nhập mã nhân viên">
+            <input type="text" id="hoTen" placeholder="Nhập họ tên">
+            <select id="thang">
+                <option value="">-- Chọn tháng --</option>
+                <option value="1">Tháng 1</option>
+                <option value="2">Tháng 2</option>
+                <option value="3">Tháng 3</option>
+                <option value="4">Tháng 4</option>
+                <option value="5">Tháng 5</option>
+                <option value="6">Tháng 6</option>
+                <option value="7">Tháng 7</option>
+                <option value="8">Tháng 8</option>
+                <option value="9">Tháng 9</option>
+                <option value="10">Tháng 10</option>
+                <option value="11">Tháng 11</option>
+                <option value="12">Tháng 12</option>
+            </select>
+            <select id="nam">
+                <option value="">-- Chọn năm --</option>
+            </select>
+            <button onclick="loadLuong(1)">🔍 Tìm kiếm</button>
+            <button onclick="tinhLuong()" class="add-btn">💰 Tính Lương</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã NV</th>
+                    <th>Họ Tên</th>
+                    <th>Năm</th>
+                    <th>Tháng</th>
+                    <th>Lương Cơ Bản</th>
+                    <th>Lương Tăng Ca</th>
+                    <th>Tiền Phạt</th>
+                    <th>Tổng cộng</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="luongTable"></tbody>
+        </table>
+
+        <div class="pagination">
+            <button onclick="prevPage()">⬅️ Trước</button>
+            <span id="pageInfo">Trang 1</span>
+            <button onclick="nextPage()">Tiếp ➡️</button>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="closeForm()"></div>
+
+    <div class="formChiTiet" id="formChiTiet">
+        <a class="close-btn" onclick="closeForm()">❌</a>
+        <h3>Chi tiết lương</h3>
+        <form>
+            <div class="form-group">
+                <label>Tổng số giờ tăng ca:</label>
+                <input type="text" id="tongGioTangCa" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Số ngày đi muộn:</label>
+                <input type="text" id="soNgayDiMuon" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Số ngày nghỉ phép:</label>
+                <input type="text" id="soNgayNghiPhep" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Số ngày vắng:</label>
+                <input type="text" id="soNgayVang" readonly>
+            </div>
+        </form>
+    </div>
+
+    <script src="/public/js/PayrollMgmt.js"></script>
+</body>
+
+</html>

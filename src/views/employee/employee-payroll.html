@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quyển Lịch</title>
+    <link rel="stylesheet" href="/public/css/employeeMgmt.css">
+</head>
+
+<body>
+    <header>
+        <div class="left-container">
+            <a href="index.html" class="logo"><img src="/public/images/logo-main.jpg" class="logo"></a>
+            <div><a href="index.html" style="text-decoration: none; color: #000;">Lí lịch làm việc</a></div>
+            <div><a href="employee-requests.html" style="text-decoration: none; color: #000;">Thông tin phê duyệt</a></div>
+            <div><a href="#" style="text-decoration: none; color: #000;">Bảng lương</a></div>
+        </div>
+        <div class="right-container">
+            <div class="icon-container" id="menuButton">
+                &#128100;
+            </div>
+            <ul class="dropdown-menu" id="menuDropdown">
+                <li><a href="employee-info.html" style="text-decoration: none; color: #000;">Thông tin cá nhân</a></li>
+                <li><a href="employee-changePassword.html" style="text-decoration: none; color: #000;">Đổi mật khẩu</a></li>
+                <li><a onclick="logout()" style="color: red;">Đăng xuất</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Tháng</th>
+                    <th>Năm</th>
+                    <th>Lương Cơ Bản</th>
+                    <th>Lương Tăng Ca</th>
+                    <th>Tiền Phạt</th>
+                    <th>Tổng cộng</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="luongTable"></tbody>
+        </table>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="closeForm()"></div>
+
+    <div class="formChiTiet" id="formChiTiet">
+        <a class="close-btn" onclick="closeForm()">X</a>
+        <h3>Chi tiết lương</h3>
+        <form>
+            <div class="form-group">
+                <label>Tổng số giờ tăng ca:</label>
+                <input type="text" id="tongGioTangCa" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Số ngày đi muộn:</label>
+                <input type="text" id="soNgayDiMuon" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Số ngày nghỉ phép:</label>
+                <input type="text" id="soNgayNghiPhep" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Số ngày vắng:</label>
+                <input type="text" id="soNgayVang" readonly>
+            </div>
+        </form>
+    </div>
+
+    <script src="/public/js/employee-payroll.js"></script>
+</body>
+
+</html>

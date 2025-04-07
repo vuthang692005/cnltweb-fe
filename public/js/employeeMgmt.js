@@ -1,8 +1,17 @@
 const menuButton = document.getElementById('menuButton');
 const menuDropdown = document.getElementById('menuDropdown');
 
-menuButton.addEventListener('click', () => {
+// Toggle menu khi click vào button
+menuButton.addEventListener('click', (event) => {
+  event.stopPropagation(); 
   menuDropdown.classList.toggle('active');
+});
+
+// Đóng menu khi click ra ngoài
+document.addEventListener('click', (event) => {
+  if (!menuDropdown.contains(event.target) && event.target !== menuButton) {
+    menuDropdown.classList.remove('active');
+  }
 });
 
 let currentPage = 1;
@@ -16,7 +25,7 @@ async function loadNhanVien(page) {
   let maPhongBan = document.getElementById("maPhongBan").value;
   let chucvu = document.getElementById("chucvu").value.toLowerCase();
 
-  let url = `https://localhost:7219/api/admin/nhanvien?page=${page}`;
+  let url = `http://thang689904-001-site1.jtempurl.com/api/admin/nhanvien?page=${page}`;
   if (maNhanVien) url += `&maNhanVien=${maNhanVien}`;
   if (hoTen) url += `&hoTen=${hoTen}`;
   if (maPhongBan) url += `&maPhongBan=${maPhongBan}`;
@@ -53,8 +62,8 @@ async function loadNhanVien(page) {
                         <td>${nv.ngayVaoLam}</td>
                         <td>${nv.luongCoBan}</td>
                         <td>
-                            <a onclick="formSua()">Sửa</a>
-                            <a onclick="xoa('${nv.maNhanVien}')">Xóa</a>
+                            <a onclick="formSua()">✏️ Sửa</a>
+                            <a onclick="xoa('${nv.maNhanVien}')">🗑️ Xóa</a>
                         </td>
                     </tr>`;
       tableBody.innerHTML += row;
@@ -120,7 +129,7 @@ async function themNhanVien() {
   };
 
   try {
-    let response = await fetch("https://localhost:7219/api/admin/nhanvien", {
+    let response = await fetch("http://thang689904-001-site1.jtempurl.com/api/admin/nhanvien", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -202,7 +211,7 @@ async function luuChinhSua() {
   };
 
   try {
-    let response = await fetch(`https://localhost:7219/api/admin/nhanvien/${MaNV}`, {
+    let response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/nhanvien/${MaNV}`, {
       method: "PUT",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -233,7 +242,7 @@ async function xoa(maNhanVien) {
   const token = localStorage.getItem("token");
   if (confirm("Bạn có chắc chắn muốn xóa nhân viên này?")) {
     try {
-      const response = await fetch(`https://localhost:7219/api/admin/nhanvien/${maNhanVien}`, {
+      const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/nhanvien/${maNhanVien}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`, // Đính kèm token trong header

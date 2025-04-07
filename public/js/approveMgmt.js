@@ -1,8 +1,17 @@
 const menuButton = document.getElementById('menuButton');
 const menuDropdown = document.getElementById('menuDropdown');
 
-menuButton.addEventListener('click', () => {
+// Toggle menu khi click vào button
+menuButton.addEventListener('click', (event) => {
+  event.stopPropagation(); 
   menuDropdown.classList.toggle('active');
+});
+
+// Đóng menu khi click ra ngoài
+document.addEventListener('click', (event) => {
+  if (!menuDropdown.contains(event.target) && event.target !== menuButton) {
+    menuDropdown.classList.remove('active');
+  }
 });
 
 document.querySelectorAll('.tab').forEach(tab => {
@@ -30,7 +39,7 @@ async function fetchDangKyTangCaCD() {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch("https://localhost:7219/api/admin/ChoDuyetDKTangCa", {
+    const response = await fetch("http://thang689904-001-site1.jtempurl.com/api/admin/ChoDuyetDKTangCa", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -69,7 +78,7 @@ async function fetchDangKyTangCaDD() {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch("https://localhost:7219/api/admin/DaDuyetDKTangCa", {
+    const response = await fetch("http://thang689904-001-site1.jtempurl.com/api/admin/DaDuyetDKTangCa", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -107,7 +116,7 @@ async function fetchDangKyTangCaTC() {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch("https://localhost:7219/api/admin/TuChoiDKTangCa", {
+    const response = await fetch("http://thang689904-001-site1.jtempurl.com/api/admin/TuChoiDKTangCa", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -145,7 +154,7 @@ async function DuyetDKTangCa(maNhanVien, ngayLam) {
   const token = localStorage.getItem("token");
   let activeTab = document.querySelector(".tab.active");
   try {
-    const response = await fetch(`https://localhost:7219/api/admin/DuyetDKTC?maNhanVien=${maNhanVien}&ngayChamCong=${ngayLam}`, {
+    const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/DuyetDKTC?maNhanVien=${maNhanVien}&ngayChamCong=${ngayLam}`, {
       method: "PUT",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -162,9 +171,9 @@ async function DuyetDKTangCa(maNhanVien, ngayLam) {
     alert(message); // Hiển thị thông báo thành công
     if (activeTab.innerText === "Chờ duyệt") {
       fetchDangKyTangCaCD();
-    }else if(activeTab.innerText === "Đã duyệt"){
+    } else if (activeTab.innerText === "Đã duyệt") {
       fetchDangKyTangCaDD();
-    }else{
+    } else {
       fetchDangKyTangCaTC();
     }
 
@@ -178,7 +187,7 @@ async function TuChoiDKTangCa(maNhanVien, ngayLam) {
   const token = localStorage.getItem("token");
   let activeTab = document.querySelector(".tab.active");
   try {
-    const response = await fetch(`https://localhost:7219/api/admin/TuChoiDKTC?maNhanVien=${maNhanVien}&ngayChamCong=${ngayLam}`, {
+    const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/TuChoiDKTC?maNhanVien=${maNhanVien}&ngayChamCong=${ngayLam}`, {
       method: "PUT",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -195,9 +204,9 @@ async function TuChoiDKTangCa(maNhanVien, ngayLam) {
     alert(message); // Hiển thị thông báo thành công
     if (activeTab.innerText === "Chờ duyệt") {
       fetchDangKyTangCaCD();
-    }else if(activeTab.innerText === "Đã duyệt"){
+    } else if (activeTab.innerText === "Đã duyệt") {
       fetchDangKyTangCaDD();
-    }else{
+    } else {
       fetchDangKyTangCaTC();
     }
 
@@ -211,7 +220,7 @@ async function fetchQuenCheckOutCD() {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch(`https://localhost:7219/api/admin/ChoDuyetQCO`, {
+    const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/ChoDuyetQCO`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -251,7 +260,7 @@ async function fetchQuenCheckOutDD() {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch(`https://localhost:7219/api/admin/DaDuyetQCO`, {
+    const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/DaDuyetQCO`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -290,7 +299,7 @@ async function fetchQuenCheckOutTC() {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch(`https://localhost:7219/api/admin/TuChoiQCO`, {
+    const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/TuChoiQCO`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -329,7 +338,7 @@ async function DuyetQCO(maNhanVien, ngayLam) {
   const token = localStorage.getItem("token");
   let activeTab = document.querySelector(".tab1.active");
   try {
-    const response = await fetch(`https://localhost:7219/api/admin/DuyetQCO?maNhanVien=${maNhanVien}&ngayChamCong=${ngayLam}`, {
+    const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/DuyetQCO?maNhanVien=${maNhanVien}&ngayChamCong=${ngayLam}`, {
       method: "PUT",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -346,9 +355,9 @@ async function DuyetQCO(maNhanVien, ngayLam) {
     alert(message); // Hiển thị thông báo thành công
     if (activeTab.innerText === "Chờ duyệt") {
       fetchQuenCheckOutCD();
-    }else if(activeTab.innerText === "Đã duyệt"){
+    } else if (activeTab.innerText === "Đã duyệt") {
       fetchQuenCheckOutDD();
-    }else{
+    } else {
       fetchQuenCheckOutTC();
     }
 
@@ -363,7 +372,7 @@ async function TuChoiQCO(maNhanVien, ngayLam) {
   let activeTab = document.querySelector(".tab1.active");
 
   try {
-    const response = await fetch(`https://localhost:7219/api/admin/TuChoiQCO?maNhanVien=${maNhanVien}&ngayChamCong=${ngayLam}`, {
+    const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/TuChoiQCO?maNhanVien=${maNhanVien}&ngayChamCong=${ngayLam}`, {
       method: "PUT",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -380,9 +389,9 @@ async function TuChoiQCO(maNhanVien, ngayLam) {
     alert(message); // Hiển thị thông báo thành công
     if (activeTab.innerText === "Chờ duyệt") {
       fetchQuenCheckOutCD();
-    }else if(activeTab.innerText === "Đã duyệt"){
+    } else if (activeTab.innerText === "Đã duyệt") {
       fetchQuenCheckOutDD();
-    }else{
+    } else {
       fetchQuenCheckOutTC();
     }
   } catch (error) {
@@ -395,7 +404,7 @@ async function fetchNghiPhepCD() {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch(`https://localhost:7219/api/admin/ChoDuyetNghiPhep`, {
+    const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/ChoDuyetNghiPhep`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -434,7 +443,7 @@ async function fetchNghiPhepDD() {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch(`https://localhost:7219/api/admin/DaDuyetNghiPhep`, {
+    const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/DaDuyetNghiPhep`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -473,7 +482,7 @@ async function fetchNghiPhepTC() {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch(`https://localhost:7219/api/admin/TuChoiNghiPhep`, {
+    const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/TuChoiNghiPhep`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -512,7 +521,7 @@ async function DuyetNghiPhep(maNhanVien, ngayLam) {
   const token = localStorage.getItem("token");
   let activeTab = document.querySelector(".tab2.active");
   try {
-    const response = await fetch(`https://localhost:7219/api/admin/DuyetNghiPhep?maNhanVien=${maNhanVien}&ngayChamCong=${ngayLam}`, {
+    const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/DuyetNghiPhep?maNhanVien=${maNhanVien}&ngayChamCong=${ngayLam}`, {
       method: "PUT",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -529,9 +538,9 @@ async function DuyetNghiPhep(maNhanVien, ngayLam) {
     alert(message); // Hiển thị thông báo thành công
     if (activeTab.innerText === "Chờ duyệt") {
       fetchQuenCheckOutCD();
-    }else if(activeTab.innerText === "Đã duyệt"){
+    } else if (activeTab.innerText === "Đã duyệt") {
       fetchQuenCheckOutDD();
-    }else{
+    } else {
       fetchQuenCheckOutTC();
     }
 
@@ -546,7 +555,7 @@ async function TuChoiNghiPhep(maNhanVien, ngayLam) {
   let activeTab = document.querySelector(".tab2.active");
 
   try {
-    const response = await fetch(`https://localhost:7219/api/admin/TuChoiNghiPhep?maNhanVien=${maNhanVien}&ngayChamCong=${ngayLam}`, {
+    const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/TuChoiNghiPhep?maNhanVien=${maNhanVien}&ngayChamCong=${ngayLam}`, {
       method: "PUT",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -563,9 +572,9 @@ async function TuChoiNghiPhep(maNhanVien, ngayLam) {
     alert(message); // Hiển thị thông báo thành công
     if (activeTab.innerText === "Chờ duyệt") {
       fetchQuenCheckOutCD();
-    }else if(activeTab.innerText === "Đã duyệt"){
+    } else if (activeTab.innerText === "Đã duyệt") {
       fetchQuenCheckOutDD();
-    }else{
+    } else {
       fetchQuenCheckOutTC();
     }
   } catch (error) {
@@ -581,3 +590,38 @@ function logout() {
 fetchQuenCheckOutCD();
 fetchDangKyTangCaCD();
 fetchNghiPhepCD();
+
+
+// Lắng nghe sự kiện click vào các tab
+
+document.querySelectorAll('.stat-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const targetId = item.getAttribute('data-target');
+    const targetElement = document.querySelector(targetId);
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+
+// Nút cuộn lên khi cuộn xuống
+const scrollBtn = document.getElementById('scrollTopBtn');
+
+  scrollBtn.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+
+  // (Optional) Hiện nút khi kéo xuống 100px
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 100) {
+      scrollBtn.style.display = 'block';
+    } else {
+      scrollBtn.style.display = 'none';
+    }
+  });
+
+  // Ban đầu ẩn nút
+  scrollBtn.style.display = 'none';

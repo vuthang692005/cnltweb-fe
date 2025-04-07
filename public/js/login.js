@@ -2,7 +2,7 @@ async function Login() {
   const TaiKhoan = document.getElementById('login-email').value;
   const password = document.getElementById('login-password').value;
 
-  const response = await fetch('https://localhost:7219/api/Login/login', {
+  const response = await fetch('http://thang689904-001-site1.jtempurl.com/api/Login/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

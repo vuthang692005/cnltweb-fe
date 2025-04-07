@@ -1,0 +1,423 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #f4f4f4;
+  height: 100vh;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  height: 90%;
+}
+
+.body {
+  width: 850px;
+  height: 450px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+
+
+
+.calendar {
+  width: 350px;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+.days,
+.dates {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.day,
+.date {
+  padding: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+}
+
+.date {
+  background: #eee;
+  border-radius: 5px;
+}
+
+.selected {
+  background: rgb(0, 171, 0) !important;
+  color: white;
+}
+
+.delete {
+  background: red !important;
+  color: white;
+}
+
+.check {
+  background: #007bff !important;
+  color: white;
+}
+
+
+
+
+
+button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.selector {
+  margin-top: 10px;
+  display: none;
+}
+
+.disabled {
+  pointer-events: none;
+}
+
+header {
+  background-color: white;
+  width: 100%;
+  height: 10%;
+  padding: 0px 20px;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+  height: 100%;
+  width: auto;
+  padding-right: 15px;
+}
+
+.menu {
+  height: 100%;
+  align-items: center;
+}
+
+.right-container {
+  display: flex;
+  align-items: center;
+}
+
+
+
+.icon-container {
+  width: 40px;
+  height: 40px;
+  background-color: #e0e0e0;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  margin-left: 20px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  background-color: white;
+  width: 200px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: none;
+  z-index: 1000;
+}
+
+.dropdown-menu.active {
+  display: block;
+}
+
+.dropdown-menu li {
+  list-style: none;
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd;
+}
+
+.dropdown-menu li:last-child {
+  border-bottom: none;
+}
+
+.dropdown-menu li:hover {
+  background-color: #f0f0f0;
+}
+
+.left-container {
+  display: flex;
+  align-items: center;
+}
+
+.left-container div {
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.left-container div:hover {
+  background-color: #7ad3ff;
+}
+
+.menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+
+
+
+
+
+
+
+
+
+.button {
+  flex: 1;
+  text-align: center;
+  padding: 10px 15px;
+  background: #eee;
+  color: #007bff;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  margin: 0 5px;
+  white-space: nowrap;
+}
+
+.button:first-child {
+  flex: 1;
+}
+
+.button:hover,
+.button.active {
+  background: #0056b3;
+  color: white;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.table-container {
+  max-height: 100%;
+  overflow-y: auto;
+  border-radius: 12px;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.custom-table th,
+.custom-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: center;
+}
+
+.custom-table th {
+  background-color: #007BFF;
+  /* Màu xanh dương */
+  color: white;
+}
+
+.custom-table tbody tr:nth-child(even) {
+  background-color: #e3f2fd;
+}
+
+.custom-table tbody tr:hover {
+  background-color: #bbdefb;
+}
+
+.custom-table td {
+  color: #333;
+}
+
+/* Toàn bộ thanh cuộn */
+::-webkit-scrollbar {
+  width: 10px;
+  border-radius: 10px;
+}
+
+/* Nền của thanh cuộn */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 12px;
+}
+
+/* Thanh trượt (phần di chuyển) */
+::-webkit-scrollbar-thumb {
+  background: #007bff;
+  border-radius: 12px;
+}
+
+/* Khi di chuột vào thanh cuộn */
+::-webkit-scrollbar-thumb:hover {
+  background: #0056b3;
+}
+
+
+
+
+.formsua {
+  width: 500px;
+  padding: 20px;
+  position: fixed;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: none;
+  z-index: 1000;
+}
+
+.formsua h3 {
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  padding-bottom: 30px;
+}
+
+.close-btn {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  font-weight: bold;
+  color: black;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-group label {
+  width: 100px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.btluu {
+  width: 100%;
+  padding: 10px;
+  background-color: blue;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: red;
+}
+
+
+
+
+.monthYear {
+  padding-left: 65px;
+  padding-right: 65px;
+}
+
+
+
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 998;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* giảm từ 10px */
+  background: #f8f9fa;
+  padding: 6px; /* giảm từ 10px */
+  border-radius: 8px; /* giảm từ 12px */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.search-box input,
+.search-box select {
+  flex: 1;
+  padding: 6px 8px; /* giảm padding */
+  border: 1px solid #ccc;
+  border-radius: 6px; /* giảm từ 8px */
+  font-size: 14px; /* giảm từ 16px */
+}
+
+.search-box button {
+  margin-top: 0px;
+  padding: 6px 10px; /* giảm từ 10px 15px */
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px; /* giảm từ 8px */
+  font-size: 14px; /* giảm từ 16px */
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.search-box button:hover {
+  background: #0056b3;
+  transform: scale(1.05);
+}

@@ -11,16 +11,19 @@
 <body>
     <header>
         <div class="left-container">
-            <a href="index.html" class="logo"><img src="/public/images/logo-main.jpg" class="logo"></a>
-            <div><a href="index.html" style="text-decoration: none; color: #000;">Lịch làm việc</a></div>
-            <div><a href="employee-requests.html" style="text-decoration: none; color: #000;">Thông tin phê duyệt</a></div>
+            <a href="#" class="logo"><img src="/public/images/logo-main.jpg" class="logo"></a>
+            <div><a href="#" style="text-decoration: none; color: #000;">Lịch làm việc</a></div>
+            <div><a href="employee-requests.html" style="text-decoration: none; color: #000;">Thông tin phê duyệt</a>
+            </div>
+            <div><a href="employee-payroll.html" style="text-decoration: none; color: #000;">Bảng lương</a></div>
         </div>
         <div class="right-container">
             <div class="icon-container" id="menuButton">
                 &#128100;
             </div>
             <ul class="dropdown-menu" id="menuDropdown">
-                <li><a href="employee-info.html" style="text-decoration: none; color: #000;">Thông tin cá nhân</a>
+                <li><a href="employee-info.html" style="text-decoration: none; color: #000;">Thông tin cá nhân</a></li>
+                <li><a href="employee-changePassword.html" style="text-decoration: none; color: #000;">Đổi mật khẩu</a>
                 </li>
                 <li><a onclick="logout()" style="color: red;">Đăng xuất</a></li>
             </ul>
@@ -67,29 +70,34 @@
                 </div>
             </div>
         </div>
-        <div class="calendar">
+        <div id="calendar" class="calendar">
+            <div id="spinner-calendar"></div>
+            <p id="calendar-loading"></p>
+
             <div class="header">
-                <button onclick="prevMonth()">❮</button>
+                <button id="prevMonth" onclick="prevMonth()">❮</button>
                 <span class="monthYear" id="monthYear"></span>
-                <button onclick="nextMonth()">❯</button>
+                <button id="nextMonth" onclick="nextMonth()">❯</button>
             </div>
-            <div class="days">
-                <div class="day">CN</div>
-                <div class="day">T2</div>
-                <div class="day">T3</div>
-                <div class="day">T4</div>
-                <div class="day">T5</div>
-                <div class="day">T6</div>
-                <div class="day">T7</div>
+            <div id="calendar-content">
+                <div class="days">
+                    <div class="day">CN</div>
+                    <div class="day">T2</div>
+                    <div class="day">T3</div>
+                    <div class="day">T4</div>
+                    <div class="day">T5</div>
+                    <div class="day">T6</div>
+                    <div class="day">T7</div>
+                </div>
+                <div class="dates" id="dates"></div>
             </div>
-            <div class="dates" id="dates"></div>
         </div>
     </div>
 
     <div class="overlay" id="overlay" onclick="closeForm()"></div>
 
     <div class="formLiDo" id="formLiDoNghi">
-        <a class="close-btn" onclick="closeForm()">X</a>
+        <a class="close-btn" onclick="closeForm()">❌</a>
         <h3>Lí do xin nghỉ</h3>
         <form>
             <div class="form-group1">
@@ -100,7 +108,7 @@
     </div>
 
     <div class="formLiDo" id="formLiDo">
-        <a class="close-btn" onclick="closeForm()">X</a>
+        <a class="close-btn" onclick="closeForm()">❌</a>
         <h3>Lí do quên check-out</h3>
         <form>
             <div class="form-group1">

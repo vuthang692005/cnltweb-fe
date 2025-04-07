@@ -3,8 +3,17 @@ let selectedDate2 = currentDate.toLocaleDateString("sv-SE"); // Biến lưu ngà
 const menuButton = document.getElementById('menuButton');
 const menuDropdown = document.getElementById('menuDropdown');
 
-menuButton.addEventListener('click', () => {
+// Toggle menu khi click vào button
+menuButton.addEventListener('click', (event) => {
+  event.stopPropagation();
   menuDropdown.classList.toggle('active');
+});
+
+// Đóng menu khi click ra ngoài
+document.addEventListener('click', (event) => {
+  if (!menuDropdown.contains(event.target) && event.target !== menuButton) {
+    menuDropdown.classList.remove('active');
+  }
 });
 
 document.addEventListener("DOMContentLoaded", async function () {
@@ -23,7 +32,7 @@ async function checkExistingDates() {
     let formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
     try {
-      const response = await fetch(`https://localhost:7219/api/NhanVien/chamcong?ngayChamCong=${formattedDate}`, {
+      const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/NhanVien/chamcong?ngayChamCong=${formattedDate}`, {
         method: "GET",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
       });
@@ -55,9 +64,16 @@ async function checkExistingDates() {
 function renderCalendar() {
   const monthYear = document.getElementById("monthYear");
   const datesContainer = document.getElementById("dates");
+  const calendar = document.getElementById("calendar-content");
+  const spinner_calendar = document.getElementById("spinner-calendar");
+  const calendar_loading = document.getElementById("calendar-loading");
 
+  calendar_loading.innerText = "Đang tải lịch...";
   // Vô hiệu hóa lịch trước khi kiểm tra ngày
   datesContainer.classList.add("disabled");
+  calendar.classList.add("disabled-calendar");
+  spinner_calendar.classList.add("spinner-calendar");
+  calendar_loading.classList.add("calendar-loading");
 
   // Lấy tháng và năm hiện tại của lịch
   const month = currentDate.getMonth();
@@ -113,6 +129,10 @@ function renderCalendar() {
   // Kiểm tra ngày tồn tại xong thì kích hoạt lại lịch
   checkExistingDates().then(() => {
     datesContainer.classList.remove("disabled");
+    calendar.classList.remove("disabled-calendar");
+    spinner_calendar.classList.remove("spinner-calendar");
+    calendar_loading.classList.remove("calendar-loading");
+    calendar_loading.style.display = "none"; 
   });
 }
 
@@ -151,7 +171,7 @@ function logout() {
 async function formcong() {
   const token = localStorage.getItem("token");
 
-  const response = await fetch(`https://localhost:7219/api/NhanVien/chamcong?ngayChamCong=${selectedDate2}`, {
+  const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/NhanVien/chamcong?ngayChamCong=${selectedDate2}`, {
     method: "GET",
     headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
   });
@@ -159,7 +179,7 @@ async function formcong() {
   if (!response.ok) {
     let result = await response.text();
     console.error("Lỗi Server:", result);
-    alert(result);
+    // alert(result);
   }
 
   const data = await response.json();
@@ -176,7 +196,7 @@ async function checkIn() {
   let ngayChamCong = document.getElementById("ngayChamCong").value;
   const token = localStorage.getItem("token");
 
-  const response = await fetch(`https://localhost:7219/api/NhanVien/CheckIn?ngayChamCong=${ngayChamCong}`, {
+  const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/NhanVien/CheckIn?ngayChamCong=${ngayChamCong}`, {
     method: "PUT",
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -187,7 +207,7 @@ async function checkIn() {
   if (!response.ok) {
     let result = await response.text();
     console.error("Lỗi Server:", result);
-    alert(result);
+    alert("Check-in thất bại!");
   } else {
     alert("Check-in thành công!");
   }
@@ -198,7 +218,7 @@ async function checkOut() {
   let ngayChamCong = document.getElementById("ngayChamCong").value;
   const token = localStorage.getItem("token");
 
-  const response = await fetch(`https://localhost:7219/api/NhanVien/CheckOut?ngayChamCong=${ngayChamCong}`, {
+  const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/NhanVien/CheckOut?ngayChamCong=${ngayChamCong}`, {
     method: "PUT",
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -220,7 +240,7 @@ async function dkTangCa() {
   let ngayChamCong = document.getElementById("ngayChamCong").value;
   const token = localStorage.getItem("token");
 
-  const response = await fetch(`https://localhost:7219/api/NhanVien/DKTangCa?ngayChamCong=${ngayChamCong}`, {
+  const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/NhanVien/DKTangCa?ngayChamCong=${ngayChamCong}`, {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -247,7 +267,7 @@ async function QuenCheckOut() {
   const token = localStorage.getItem("token");
   let liDo = document.getElementById("liDo2").value;
 
-  const response = await fetch(`https://localhost:7219/api/NhanVien/QuenCheckOut?ngayChamCong=${ngayChamCong}&LiDo=${liDo}`, {
+  const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/NhanVien/QuenCheckOut?ngayChamCong=${ngayChamCong}&LiDo=${liDo}`, {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -276,7 +296,7 @@ async function nghiPhep() {
   const token = localStorage.getItem("token");
   let liDo = document.getElementById("liDo1").value;
 
-  const response = await fetch(`https://localhost:7219/api/NhanVien/XinNghiPhep?ngayChamCong=${ngayChamCong}&LiDo=${liDo}`, {
+  const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/NhanVien/XinNghiPhep?ngayChamCong=${ngayChamCong}&LiDo=${liDo}`, {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${token}`,

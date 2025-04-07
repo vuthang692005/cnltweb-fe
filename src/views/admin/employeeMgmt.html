@@ -15,13 +15,15 @@
             <div><a href="index.html" style="text-decoration: none; color: #000;">Quản lí lịch làm việc</a></div>
             <div><a href="#" style="text-decoration: none; color: #000;">Quản lí nhân viên</a></div>
             <div><a href="approveMgmt.html" style="text-decoration: none; color: #000;">Thông tin phê duyệt</a></div>
+            <div><a href="PayrollMgmt.html" style="text-decoration: none; color: #000;">Quản lí lương</a></div>
+            <div><a href="rules-settings.html" style="text-decoration: none; color: #000;">Thiết lập quy định</a></div>
         </div>
         <div class="right-container">
             <div class="icon-container" id="menuButton">
                 &#128100;
             </div>
             <ul class="dropdown-menu" id="menuDropdown">
-                <li><a href="rules-settings.html" style="text-decoration: none; color: #000;">Thiết lập quy định</a></li>
+                <li><a href="ChangePassword.html" style="text-decoration: none; color: #000;">Đổi mật khẩu</a></li>
                 <li><a onclick="logout()" style="color: red;">Đăng xuất</a></li>
             </ul>
         </div>
@@ -37,40 +39,36 @@
                 <option value="2">kế toán</option>
             </select>
             <input type="text" id="chucvu" placeholder="Nhập chức vụ">
-            <button onclick="loadNhanVien(1)">Tìm kiếm</button>
+            <button onclick="loadNhanVien(1)">🔍 Tìm kiếm</button>
             <button onclick="formThem()" class="add-btn">➕ Thêm Nhân Viên</button>
         </div>
 
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Mã NV</th>
-                    <th>Họ Tên</th>
-                    <th>Ngày Sinh</th>
-                    <th>Giới Tính</th>
-                    <th>SĐT</th>
-                    <th>Email</th>
-                    <th>Phòng Ban</th>
-                    <th>Chức Vụ</th>
-                    <th>Ngày Vào Làm</th>
-                    <th>Lương Cơ Bản</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody id="nhanVienTable"></tbody>
-        </table>
-
-        <div class="pagination">
-            <button onclick="prevPage()">⬅️ Trước</button>
-            <span id="pageInfo">Trang 1</span>
-            <button onclick="nextPage()">Tiếp ➡️</button>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã NV</th>
+                        <th>Họ Tên</th>
+                        <th>Ngày Sinh</th>
+                        <th>Giới Tính</th>
+                        <th>SĐT</th>
+                        <th>Email</th>
+                        <th>Phòng Ban</th>
+                        <th>Chức Vụ</th>
+                        <th>Ngày Vào Làm</th>
+                        <th>Lương Cơ Bản</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="nhanVienTable"></tbody>
+            </table>
         </div>
+
 
         <div class="overlay" id="overlay" onclick="closeForm()"></div>
 
         <div class="formsua" id="formsua">
-            <a class="close-btn" onclick="closeForm()">X</a>
+            <a class="close-btn" onclick="closeForm()">❌</a>
             <h3>Chỉnh sửa thông tin</h3>
             <form id="editForm">
                 <div class="form-group">
@@ -100,7 +98,7 @@
         </div>
 
         <div class="formthem" id="formThem">
-            <a class="close-btn" onclick="closeForm()">X</a>
+            <a class="close-btn" onclick="closeForm()">❌</a>
             <h3>Thêm nhân viên</h3>
             <form id="createForm">
                 <div class="form-group">
@@ -151,6 +149,11 @@
 
                 <button class="btluu" type="button" onclick="themNhanVien()">Thêm</button>
             </form>
+        </div>
+        <div class="pagination">
+            <button onclick="prevPage()">⬅️ Trước</button>
+            <span id="pageInfo">Trang 1</span>
+            <button onclick="nextPage()">Tiếp ➡️</button>
         </div>
     </div>
 

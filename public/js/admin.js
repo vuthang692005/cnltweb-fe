@@ -19,8 +19,17 @@ document.addEventListener("DOMContentLoaded", function () {
 const menuButton = document.getElementById('menuButton');
 const menuDropdown = document.getElementById('menuDropdown');
 
-menuButton.addEventListener('click', () => {
+// Toggle menu khi click vào button
+menuButton.addEventListener('click', (event) => {
+  event.stopPropagation(); 
   menuDropdown.classList.toggle('active');
+});
+
+// Đóng menu khi click ra ngoài
+document.addEventListener('click', (event) => {
+  if (!menuDropdown.contains(event.target) && event.target !== menuButton) {
+    menuDropdown.classList.remove('active');
+  }
 });
 
 let currentDate = new Date();
@@ -68,7 +77,11 @@ function chiTiet() {
   buttenthem.classList.add("hidden");
 }
 
+
 async function checkExistingDates() {
+
+
+
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;
   const datesContainer = document.getElementById("dates");
@@ -78,9 +91,9 @@ async function checkExistingDates() {
 
   for (let day = 1; day <= 31; day++) {
     let formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-
+    if (month !== currentDate.getMonth() + 1) {return;} 
     try {
-      const response = await fetch(`https://localhost:7219/api/admin/KiemTraNgay?ngayChamCong=${formattedDate}`, {
+      const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/KiemTraNgay?ngayChamCong=${formattedDate}`, {
         method: "GET",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
       });
@@ -109,12 +122,25 @@ async function checkExistingDates() {
   });
 }
 
+
+
 function renderCalendar() {
+
+
+
   const monthYear = document.getElementById("monthYear");
   const datesContainer = document.getElementById("dates");
+  const calendar = document.getElementById("calendar-content");
+  const spinner_calendar = document.getElementById("spinner-calendar");
+  const calendar_loading = document.getElementById("calendar-loading");
 
+
+  calendar_loading.innerText = "Đang tải lịch...";
   // Vô hiệu hóa lịch trước khi kiểm tra ngày
   datesContainer.classList.add("disabled");
+  calendar.classList.add("disabled-calendar");
+  spinner_calendar.classList.add("spinner-calendar");
+  calendar_loading.classList.add("calendar-loading");
 
   const month = currentDate.getMonth();
   const year = currentDate.getFullYear();
@@ -143,10 +169,16 @@ function renderCalendar() {
   // Kiểm tra ngày tồn tại xong thì kích hoạt lại lịch
   checkExistingDates().then(() => {
     datesContainer.classList.remove("disabled");
+    calendar.classList.remove("disabled-calendar");
+    spinner_calendar.classList.remove("spinner-calendar");
+    calendar_loading.classList.remove("calendar-loading");
+    calendar_loading.innerText = "";
   });
 }
 
 async function checkExistingDates1() {
+  
+
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;
   const datesContainer = document.getElementById("dates1");
@@ -157,9 +189,9 @@ async function checkExistingDates1() {
 
   for (let day = 1; day <= 31; day++) {
     let formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-
+    if (month !== currentDate.getMonth() + 1) {return;} 
     try {
-      const response = await fetch(`https://localhost:7219/api/admin/KiemTraNgay?ngayChamCong=${formattedDate}`, {
+      const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/KiemTraNgay?ngayChamCong=${formattedDate}`, {
         method: "GET",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
       });
@@ -200,6 +232,7 @@ async function checkExistingDates1() {
 
 
 function renderCalendar1() {
+
   const monthYear = document.getElementById("monthYear");
   const datesContainer = document.getElementById("dates1");
 
@@ -237,6 +270,9 @@ function renderCalendar1() {
 }
 
 function renderCalendar2() {
+
+
+
   const monthYear = document.getElementById("monthYear");
   const datesContainer = document.getElementById("dates2");
 
@@ -329,19 +365,23 @@ function checkDate(element, dateKey) {
   }
   selectedDate2 = dateKey;
   element.classList.add("check");
-  fetchChamCong()
+  fetchChamCong(1)
 }
+
+
 
 
 function prevMonth() {
   selectedDates1.clear();
   selectedDates2.clear();
-  let today = new Date();
   currentDate.setMonth(currentDate.getMonth() - 1);
+
+  setTimeout(() => {}, 10000);
+
   renderCalendar();
   renderCalendar1();
   renderCalendar2();
-  fetchChamCong()
+  fetchChamCong(1)
 
 }
 
@@ -350,11 +390,15 @@ function nextMonth() {
   selectedDates1.clear();
   selectedDates2.clear();
   currentDate.setMonth(currentDate.getMonth() + 1);
-  renderCalendar();
-  renderCalendar1();
-  renderCalendar2();
-  fetchChamCong()
+
+  setTimeout(() => {
+    renderCalendar();
+    renderCalendar1();
+    renderCalendar2();
+    fetchChamCong(1);
+  }, 888); 
 }
+
 
 async function submitSelectedDates() {
   const selectedArray = Array.from(selectedDates1);
@@ -367,7 +411,7 @@ async function submitSelectedDates() {
   for (const date of selectedArray) {
     const formattedDate = date.split('-').map(num => num.padStart(2, '0')).join('-');
     try {
-      const response = await fetch(`https://localhost:7219/api/admin/tao-cham-cong?ngayChamCong=${formattedDate}`, {
+      const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/tao-cham-cong?ngayChamCong=${formattedDate}`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -390,7 +434,7 @@ async function submitSelectedDates() {
   renderCalendar();
   renderCalendar1();
   renderCalendar2();
-  fetchChamCong()
+  fetchChamCong(1)
 }
 
 async function deleteSelectedDates() {
@@ -404,7 +448,7 @@ async function deleteSelectedDates() {
   for (const date of selectedArray) {
     const formattedDate = date.split('-').map(num => num.padStart(2, '0')).join('-');
     try {
-      const response = await fetch(`https://localhost:7219/api/admin/XoaChamCong?ngayChamCong=${formattedDate}`, {
+      const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/XoaChamCong?ngayChamCong=${formattedDate}`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -427,13 +471,26 @@ async function deleteSelectedDates() {
   renderCalendar();
   renderCalendar1();
   renderCalendar2();
-  fetchChamCong()
+  fetchChamCong(1)
 }
 
-async function fetchChamCong() {
+let currentPage = 1;
+let totalPages = 1;
+
+async function fetchChamCong(page) {
   const token = localStorage.getItem("token");
+  currentPage = page;
+  let maNhanVien = document.getElementById("maNhanVien").value;
+  let hoTen = document.getElementById("hoTen").value;
+  let tangCa = document.getElementById("tinhTrangtangCa").value;
+
+  let url = `http://thang689904-001-site1.jtempurl.com/api/admin/KiemTraNgay?page=${page}&ngayChamCong=${selectedDate2}`;
+  if (maNhanVien) url += `&maNhanVien=${maNhanVien}`;
+  if (hoTen) url += `&hoTen=${hoTen}`;
+  if (tangCa) url += `&tangCa=${tangCa}`;
+ 
   try {
-    let response = await fetch(`https://localhost:7219/api/admin/KiemTraNgay?ngayChamCong=${selectedDate2}`, {
+    let response = await fetch(url, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Đính kèm token trong header
@@ -441,55 +498,53 @@ async function fetchChamCong() {
       }
     });
 
-    let data = await response.json();
-
     if (!response.ok) {
-      throw new Error(data);
-    }
-    renderTable(data);
+      // Nếu có lỗi, hiển thị dòng thông báo
+      tableBody.innerHTML = `<tr><td colspan="9" style="text-align: center;">Không có dữ liệu chấm công</td></tr>`;
+      return;
+    }    const data = await response.json();
+
+    totalPages = data.totalPages;
+    document.getElementById("pageInfo").innerText = `Trang ${currentPage} / ${totalPages}`;
+
+    let tableBody = document.getElementById("luongTable");
+    tableBody.innerHTML = "";
+
+    data.data.forEach(nv => {
+      let row = `
+                    <tr>
+                        <td>${nv.maNhanVien}</td>
+                        <td>${nv.maChamCong}</td>
+                        <td>${nv.tenNhanVien}</td>
+                        <td>${nv.gioVao || "-"}</td>
+                        <td>${nv.gioRa || "-"}</td>
+                        <td>${nv.tinhTrang || "-"}</td>
+                        <td>${nv.tangCa === "True" ? "Có" : "Không"}</td>
+                        <td>${nv.soGioTangCa}</td>
+                        <td><a onclick="sua()" style="color: blue; cursor: pointer;">Sửa</a></td>
+                    </tr>`;
+      tableBody.innerHTML += row;
+    });
   } catch (error) {
-    document.querySelector(".body").innerHTML = `<p style="color:red;">Lỗi: ${error.message}</p>`;
+    // alert(error.message);
+    let tableBody = document.getElementById("luongTable");
+    tableBody.innerHTML = `<tr><td colspan="9" style="text-align: center;">Không có dữ liệu chấm công </td></tr>`;
+    console.error(error);
   }
 }
 
-// Hàm hiển thị dữ liệu lên bảng
-function renderTable(data) {
-  let bodyDiv = document.querySelector(".body");
-  bodyDiv.innerHTML = `
-<div class="table-container">
-  <table class="custom-table">
-      <thead>
-          <tr>
-              <th>Mã NV</th>
-              <th>Mã CC</th>
-              <th>Tên NV</th>
-              <th>Giờ Vào</th>
-              <th>Giờ Ra</th>
-              <th>Tình Trạng</th>
-              <th>Tăng Ca</th>
-              <th>Giờ Tăng Ca</th>
-              <th></th>
-          </tr>
-      </thead>
-      <tbody>
-          ${data.map(row => `
-              <tr>
-                  <td>${row.maNhanVien}</td>
-                  <td>${row.maChamCong}</td>
-                  <td>${row.tenNhanVien}</td>
-                  <td>${row.gioVao || "-"}</td>
-                  <td>${row.gioRa || "-"}</td>
-                  <td>${row.tinhTrang || "-"}</td>
-                  <td>${row.tangCa === "True" ? "Có" : "Không"}</td>
-                  <td>${row.soGioTangCa}</td>
-                  <td><a onclick="sua()" style="color: blue; cursor: pointer;">sửa</a></td>
-              </tr>
-          `).join("")}
-      </tbody>
-  </table>
-</div>
-`;
+function prevPage() {
+  if (currentPage > 1) {
+    fetchChamCong(currentPage - 1);
+  }
 }
+
+function nextPage() {
+  if (currentPage < totalPages) {
+    fetchChamCong(currentPage + 1);
+  }
+}
+
 let currentRow = null;
 function sua() {
   // Tìm dòng <tr> chứa nút "sửa" được nhấn
@@ -532,7 +587,7 @@ async function luuChinhSua() {
   };
 
   try {
-    let response = await fetch(`https://localhost:7219/api/admin/SuaChamCong?maChamCong=${MaCC}`, {
+    let response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/SuaChamCong?maChamCong=${MaCC}`, {
       method: "PUT",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -546,7 +601,7 @@ async function luuChinhSua() {
     if (response.ok) {
       alert("Cập nhật thành công!");
       closeForm();
-      fetchChamCong();
+      fetchChamCong(currentPage);
     } else {
       alert(result.message || "Cập nhật thất bại!");
     }
@@ -554,9 +609,8 @@ async function luuChinhSua() {
     console.error("Lỗi khi cập nhật:", error);
     alert("Có lỗi xảy ra, vui lòng thử lại!");
   }
-
   closeForm();
-  fetchChamCong()
+  fetchChamCong(currentPage)
 }
 
 function closeForm() {
@@ -571,7 +625,7 @@ function logout() {
 }
 
 // Gọi API khi trang tải
-document.addEventListener("DOMContentLoaded", fetchChamCong);
+document.addEventListener("DOMContentLoaded", fetchChamCong(1));
 
 renderCalendar();
 renderCalendar1();

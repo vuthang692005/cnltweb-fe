@@ -15,7 +15,8 @@
         <div class="left-container">
             <a href="index.html" class="logo"><img src="/public/images/logo-main.jpg" class="logo"></a>
             <div><a href="index.html" style="text-decoration: none; color: #000;">Lịch làm việc</a></div>
-            <div><a href="employee-requests.html" style="text-decoration: none; color: #000;">Thông tin phê duyệt</a></div>
+            <div><a href="#" style="text-decoration: none; color: #000;">Thông tin phê duyệt</a></div>
+            <div><a href="employee-payroll.html" style="text-decoration: none; color: #000;">Bảng lương</a></div>
         </div>
         <div class="right-container">
             <div class="icon-container" id="menuButton">
@@ -23,6 +24,8 @@
             </div>
             <ul class="dropdown-menu" id="menuDropdown">
                 <li><a href="employee-info.html" style="text-decoration: none; color: #000;">Thông tin cá nhân</a></li>
+                <li><a href="employee-changePassword.html" style="text-decoration: none; color: #000;">Đổi mật khẩu</a>
+                </li>
                 <li><a onclick="logout()" style="color: red;">Đăng xuất</a></li>
             </ul>
         </div>
@@ -30,91 +33,95 @@
 
     <div class="container">
         <div class="stats">
-            <div class="stat-item green">
+            <div class="stat-item green" data-target="#tangca">
                 <i class="fa-solid fa-clock"></i>
                 <span>Tăng ca chờ duyệt</span>
             </div>
-            <div class="stat-item blue">
+            <div class="stat-item blue" data-target="#quencheckout">
                 <i class="fa-solid fa-clock"></i>
                 <span>Quên check-out chờ duyệt</span>
             </div>
-            <div class="stat-item yellow">
+            <div class="stat-item yellow" data-target="#nghiphep">
                 <i class="fa-solid fa-users"></i>
                 <span>Nghỉ phép chờ duyệt</span>
             </div>
         </div>
     </div>
+    <div class="thongTin-container">
+        <div id="tangca" class="thongTin section">
+            <h2>Danh sách tăng ca chờ duyệt</h2>
+            <hr style=" border: 1px solid #ddd; margin-top: 20px;">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="fetchDangKyTangCaCD()">Chờ duyệt</button>
+                <button class="tab" onclick="fetchDangKyTangCaDD()">Đã duyệt</button>
+                <button class="tab" onclick="fetchDangKyTangCaTC()">Từ chối</button>
+            </div>
 
-    <div class="thongTin">
-        <h2>Danh sách tăng ca chờ duyệt</h2>
-        <hr style=" border: 1px solid #ddd; margin-top: 20px;">
-        <!-- Tabs -->
-        <div class="tabs">
-            <button class="tab active" onclick="fetchDangKyTangCaCD()">Chờ duyệt</button>
-            <button class="tab" onclick="fetchDangKyTangCaDD()">Đã duyệt</button>
-            <button class="tab" onclick="fetchDangKyTangCaTC()">Từ chối</button>
+            <!-- Bảng dữ liệu -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ngày tăng ca</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="tangCaTable"></tbody>
+            </table>
         </div>
 
-        <!-- Bảng dữ liệu -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Ngày tăng ca</th>
-                    <th>Trạng thái</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody id="tangCaTable"></tbody>
-        </table>
-    </div>
+        <div id="quencheckout" class="thongTin section">
+            <h2>Danh sách quên check-out chờ duyệt</h2>
+            <hr style=" border: 1px solid #ddd; margin-top: 20px;">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab1 active" onclick="fetchQuenCheckOutCD()">Chờ duyệt</button>
+                <button class="tab1" onclick="fetchQuenCheckOutDD()">Đã duyệt</button>
+                <button class="tab1" onclick="fetchQuenCheckOutTC()">Từ chối</button>
+            </div>
 
-    <div class="thongTin">
-        <h2>Danh sách quên check-out chờ duyệt</h2>
-        <hr style=" border: 1px solid #ddd; margin-top: 20px;">
-        <!-- Tabs -->
-        <div class="tabs">
-            <button class="tab1 active" onclick="fetchQuenCheckOutCD()">Chờ duyệt</button>
-            <button class="tab1" onclick="fetchQuenCheckOutDD()">Đã duyệt</button>
-            <button class="tab1" onclick="fetchQuenCheckOutTC()">Từ chối</button>
+            <!-- Bảng dữ liệu -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ngày quên</th>
+                        <th>Lí do</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="quenCheckOutTable"></tbody>
+            </table>
         </div>
 
-        <!-- Bảng dữ liệu -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Ngày quên</th>
-                    <th>Lí do</th>
-                    <th>Trạng thái</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody id="quenCheckOutTable"></tbody>
-        </table>
-    </div>
+        <div id="nghiphep" class="thongTin section">
+            <h2>Danh sách nghỉ phép chờ duyệt</h2>
+            <hr style=" border: 1px solid #ddd; margin-top: 20px;">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab2 active" onclick="fetchNghiPhepCD()">Chờ duyệt</button>
+                <button class="tab2" onclick="fetchNghiPhepDD()">Đã duyệt</button>
+                <button class="tab2" onclick="fetchNghiPhepTC()">Từ chối</button>
+            </div>
 
-    <div class="thongTin">
-        <h2>Danh sách nghỉ phép chờ duyệt</h2>
-        <hr style=" border: 1px solid #ddd; margin-top: 20px;">
-        <!-- Tabs -->
-        <div class="tabs">
-            <button class="tab2 active" onclick="fetchNghiPhepCD()">Chờ duyệt</button>
-            <button class="tab2" onclick="fetchNghiPhepDD()">Đã duyệt</button>
-            <button class="tab2" onclick="fetchNghiPhepTC()">Từ chối</button>
+            <!-- Bảng dữ liệu -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ngày nghỉ phép</th>
+                        <th>Lí do</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="nghiPhepTable"></tbody>
+            </table>
         </div>
-
-        <!-- Bảng dữ liệu -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Ngày nghỉ phép</th>
-                    <th>Lí do</th>
-                    <th>Trạng thái</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody id="nghiPhepTable"></tbody>
-        </table>
     </div>
+    <button id="scrollTopBtn" title="Lên đầu trang">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
 
     <script src="/public/js/employee-requests.js"></script>
 </body>
