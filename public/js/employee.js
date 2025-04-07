@@ -20,6 +20,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   await formcong();
 });
 
+
+let currentController = null;
 async function checkExistingDates() {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;
@@ -28,22 +30,49 @@ async function checkExistingDates() {
 
   let existingDates = new Set();
 
-  for (let day = 1; day <= 31; day++) {
-    let formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+  // Nếu có request cũ, cancel trước khi bắt đầu request mới
+  if (currentController) {
+    currentController.abort(); // Huỷ toàn bộ request cũ
+  }
 
-    try {
-      const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/NhanVien/chamcong?ngayChamCong=${formattedDate}`, {
-        method: "GET",
-        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
+  // Tạo một AbortController mới cho lần gọi API này
+  currentController = new AbortController();
+  const signal = currentController.signal;
+
+  const fetchPromises = [];
+
+  for (let day = 1; day <= 31; day++) {
+    const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    if (month !== currentDate.getMonth() + 1) { return; }
+
+    const url = `http://thang689904-001-site1.jtempurl.com/api/NhanVien/chamcong?ngayChamCong=${formattedDate}`;
+
+    const promise = fetch(url, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      signal // Truyền signal vào để fetch biết là có thể bị huỷ
+    })
+      .then(response => {
+        if (response.ok) {
+          existingDates.add(formattedDate);
+        }
+      })
+      .catch(error => {
+        if (error.name === 'AbortError') {
+          console.log(`Request cho ngày ${formattedDate} đã bị huỷ.`);
+        } else {
+          console.error(`Lỗi khi kiểm tra ngày ${formattedDate}:`, error);
+        }
       });
 
-      if (response.ok) {
-        existingDates.add(formattedDate); // Ngày đã tồn tại
-      }
-    } catch (error) {
-      console.error(`Lỗi khi kiểm tra ngày ${formattedDate}:`, error);
-    }
+    fetchPromises.push(promise);
   }
+  // Chờ tất cả fetch hoàn thành
+  await Promise.all(fetchPromises);
+
 
   // Cập nhật giao diện
   datesContainer.querySelectorAll('.date').forEach(dateElement => {
@@ -67,13 +96,17 @@ function renderCalendar() {
   const calendar = document.getElementById("calendar-content");
   const spinner_calendar = document.getElementById("spinner-calendar");
   const calendar_loading = document.getElementById("calendar-loading");
+  const prevMonthButton = document.getElementById("prevMonth");
+  const nextMonthButton = document.getElementById("nextMonth");
 
   calendar_loading.innerText = "Đang tải lịch...";
   // Vô hiệu hóa lịch trước khi kiểm tra ngày
-  datesContainer.classList.add("disabled");
+  // datesContainer.classList.add("disabled");
   calendar.classList.add("disabled-calendar");
   spinner_calendar.classList.add("spinner-calendar");
   calendar_loading.classList.add("calendar-loading");
+  prevMonthButton.classList.add("prevAndNext");
+  nextMonthButton.classList.add("prevAndNext");
 
   // Lấy tháng và năm hiện tại của lịch
   const month = currentDate.getMonth();
@@ -132,7 +165,9 @@ function renderCalendar() {
     calendar.classList.remove("disabled-calendar");
     spinner_calendar.classList.remove("spinner-calendar");
     calendar_loading.classList.remove("calendar-loading");
-    calendar_loading.style.display = "none"; 
+    calendar_loading.innerText = "";
+    prevMonthButton.classList.remove("prevAndNext");
+    nextMonthButton.classList.remove("prevAndNext");
   });
 }
 
@@ -151,16 +186,22 @@ function checkDate(element, dateKey) {
 function prevMonth() {
   let today = new Date();
   currentDate.setMonth(currentDate.getMonth() - 1);
-  renderCalendar();
-  formcong();
+
+  // setTimeout(() => {
+    renderCalendar();
+    formcong();
+  // }, 200);
+
 }
 
 
 function nextMonth() {
   let today = new Date();
   currentDate.setMonth(currentDate.getMonth() + 1);
-  renderCalendar();
-  formcong();
+  // setTimeout(() => {
+    renderCalendar();
+    formcong();
+  // }, 200);
 }
 
 function logout() {

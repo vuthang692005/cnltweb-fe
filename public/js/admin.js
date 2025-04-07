@@ -21,7 +21,7 @@ const menuDropdown = document.getElementById('menuDropdown');
 
 // Toggle menu khi click vào button
 menuButton.addEventListener('click', (event) => {
-  event.stopPropagation(); 
+  event.stopPropagation();
   menuDropdown.classList.toggle('active');
 });
 
@@ -78,131 +78,66 @@ function chiTiet() {
 }
 
 
-async function checkExistingDates() {
 
 
+let currentController = null;
 
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth() + 1;
-  const datesContainer = document.getElementById("dates");
-  const token = localStorage.getItem("token");
-
-  let existingDates = new Set();
-
-  for (let day = 1; day <= 31; day++) {
-    let formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-    if (month !== currentDate.getMonth() + 1) {return;} 
-    try {
-      const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/KiemTraNgay?ngayChamCong=${formattedDate}`, {
-        method: "GET",
-        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
-      });
-
-      if (response.ok) {
-        existingDates.add(formattedDate); // Ngày đã tồn tại
-      }
-    } catch (error) {
-      console.error(`Lỗi khi kiểm tra ngày ${formattedDate}:`, error);
-    }
-  }
-
-  // Cập nhật giao diện
-  datesContainer.childNodes.forEach(dateElement => {
-    const day = dateElement.innerText;
-    if (!isNaN(day)) {
-      let dateKey = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-      if (existingDates.has(dateKey)) {
-        dateElement.style.background = "#ccc";
-        dateElement.style.color = "white";
-        dateElement.style.pointerEvents = "none"; // Vô hiệu hóa click
-
-      }
-    }
-
-  });
-}
-
-
-
-function renderCalendar() {
-
-
-
-  const monthYear = document.getElementById("monthYear");
-  const datesContainer = document.getElementById("dates");
-  const calendar = document.getElementById("calendar-content");
-  const spinner_calendar = document.getElementById("spinner-calendar");
-  const calendar_loading = document.getElementById("calendar-loading");
-
-
-  calendar_loading.innerText = "Đang tải lịch...";
-  // Vô hiệu hóa lịch trước khi kiểm tra ngày
-  datesContainer.classList.add("disabled");
-  calendar.classList.add("disabled-calendar");
-  spinner_calendar.classList.add("spinner-calendar");
-  calendar_loading.classList.add("calendar-loading");
-
-  const month = currentDate.getMonth();
-  const year = currentDate.getFullYear();
-
-  monthYear.innerText = `${year} - Tháng ${month + 1}`;
-  datesContainer.innerHTML = "";
-
-  const firstDay = new Date(year, month, 1).getDay();
-  const lastDate = new Date(year, month + 1, 0).getDate();
-
-  for (let i = 0; i < firstDay; i++) {
-    datesContainer.innerHTML += `<div></div>`;
-  }
-
-  for (let i = 1; i <= lastDate; i++) {
-    let dateKey = `${year}-${month + 1}-${i}`;
-
-    let className = "date";
-    let dateElement = document.createElement("div");
-    dateElement.className = className;
-    dateElement.innerText = i;
-    dateElement.onclick = () => toggleDate(dateElement, dateKey);
-    datesContainer.appendChild(dateElement);
-  }
-
-  // Kiểm tra ngày tồn tại xong thì kích hoạt lại lịch
-  checkExistingDates().then(() => {
-    datesContainer.classList.remove("disabled");
-    calendar.classList.remove("disabled-calendar");
-    spinner_calendar.classList.remove("spinner-calendar");
-    calendar_loading.classList.remove("calendar-loading");
-    calendar_loading.innerText = "";
-  });
-}
 
 async function checkExistingDates1() {
-  
-
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;
+  const datesContainer3 = document.getElementById("dates");
   const datesContainer = document.getElementById("dates1");
   const datesContainer2 = document.getElementById("dates2");
   const token = localStorage.getItem("token");
 
   let existingDates = new Set();
 
+
+  // Nếu có request cũ, cancel trước khi bắt đầu request mới
+  if (currentController) {
+    currentController.abort(); // Huỷ toàn bộ request cũ
+  }
+
+  // Tạo một AbortController mới cho lần gọi API này
+  currentController = new AbortController();
+  const signal = currentController.signal;
+
+  const fetchPromises = [];
+
   for (let day = 1; day <= 31; day++) {
-    let formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-    if (month !== currentDate.getMonth() + 1) {return;} 
-    try {
-      const response = await fetch(`http://thang689904-001-site1.jtempurl.com/api/admin/KiemTraNgay?ngayChamCong=${formattedDate}`, {
-        method: "GET",
-        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
+    const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    if (month !== currentDate.getMonth() + 1) { return; }
+
+    const url = `http://thang689904-001-site1.jtempurl.com/api/admin/KiemTraNgay?ngayChamCong=${formattedDate}`;
+
+    const promise = fetch(url, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      signal // Truyền signal vào để fetch biết là có thể bị huỷ
+    })
+      .then(response => {
+        if (response.ok) {
+          existingDates.add(formattedDate);
+        }
+      })
+      .catch(error => {
+        if (error.name === 'AbortError') {
+          console.log(`Request cho ngày ${formattedDate} đã bị huỷ.`);
+        } else {
+          console.error(`Lỗi khi kiểm tra ngày ${formattedDate}:`, error);
+        }
       });
 
-      if (response.ok) {
-        existingDates.add(formattedDate); // Ngày đã tồn tại
-      }
-    } catch (error) {
-      console.error(`Lỗi khi kiểm tra ngày ${formattedDate}:`, error);
-    }
+    fetchPromises.push(promise);
   }
+  // Chờ tất cả fetch hoàn thành
+  await Promise.all(fetchPromises);
+
+
 
   // Cập nhật giao diện chỉ với các phần tử có class "date"
   datesContainer.querySelectorAll('.date').forEach(dateElement => {
@@ -228,68 +163,45 @@ async function checkExistingDates1() {
       }
     }
   });
-}
 
+  datesContainer3.childNodes.forEach(dateElement => {
+    const day = dateElement.innerText;
+    if (!isNaN(day)) {
+      let dateKey = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+      if (existingDates.has(dateKey)) {
+        dateElement.style.background = "#ccc";
+        dateElement.style.color = "white";
+        dateElement.style.pointerEvents = "none"; // Vô hiệu hóa click
 
-function renderCalendar1() {
-
-  const monthYear = document.getElementById("monthYear");
-  const datesContainer = document.getElementById("dates1");
-
-  // Vô hiệu hóa lịch trước khi kiểm tra ngày
-  datesContainer.classList.add("disabled");
-
-  const month = currentDate.getMonth();
-  const year = currentDate.getFullYear();
-
-  monthYear.innerText = `${year} - Tháng ${month + 1}`;
-  datesContainer.innerHTML = "";
-
-  const firstDay = new Date(year, month, 1).getDay();
-  const lastDate = new Date(year, month + 1, 0).getDate();
-
-  for (let i = 0; i < firstDay; i++) {
-    datesContainer.innerHTML += `<div></div>`;
-  }
-
-  for (let i = 1; i <= lastDate; i++) {
-    let dateKey = `${year}-${month + 1}-${i}`;
-
-    let className = "date";
-    let dateElement = document.createElement("div");
-    dateElement.className = className;
-    dateElement.innerText = i;
-    dateElement.onclick = () => removeDate(dateElement, dateKey);
-    datesContainer.appendChild(dateElement);
-  }
-
-  // Kiểm tra ngày tồn tại xong thì kích hoạt lại lịch
-  checkExistingDates1().then(() => {
-    datesContainer.classList.remove("disabled");
+      }
+    }
   });
+
 }
 
-function renderCalendar2() {
 
-
-
+function renderCalendar() {
   const monthYear = document.getElementById("monthYear");
-  const datesContainer = document.getElementById("dates2");
+  const datesContainer = document.getElementById("dates");
+  const datesContainer1 = document.getElementById("dates1");
+  const datesContainer2 = document.getElementById("dates2");
+  const calendar = document.getElementById("calendar-content");
+  const spinner_calendar = document.getElementById("spinner-calendar");
+  const calendar_loading = document.getElementById("calendar-loading");
+  const prevMonthButton = document.getElementById("prevMonth");
+  const nextMonthButton = document.getElementById("nextMonth");
 
+
+  calendar_loading.innerText = "Đang tải lịch...";
   // Vô hiệu hóa lịch trước khi kiểm tra ngày
-  datesContainer.classList.add("disabled");
+  calendar.classList.add("disabled-calendar");
+  spinner_calendar.classList.add("spinner-calendar");
+  calendar_loading.classList.add("calendar-loading");
+  prevMonthButton.classList.add("prevAndNext");
+  nextMonthButton.classList.add("prevAndNext");
 
-  // Lấy tháng và năm hiện tại của lịch
   const month = currentDate.getMonth();
   const year = currentDate.getFullYear();
-
-  monthYear.innerText = `${year} - Tháng ${month + 1}`;
-  datesContainer.innerHTML = "";
-
-  // Xác định ngày đầu tiên của tháng và tổng số ngày
-  const firstDayIndex = new Date(year, month, 1).getDay(); // Thứ của ngày 1 trong tháng (0: CN, 1: T2, ...)
-  const lastDate = new Date(year, month + 1, 0).getDate(); // Ngày cuối tháng
-
   // Lấy ngày hiện tại
   let today = new Date();
   let todayMonth = today.getMonth();
@@ -297,17 +209,37 @@ function renderCalendar2() {
   let todayStr = `${todayYear}-${todayMonth + 1}-${today.getDate()}`;
   let firstDayStr = `${year}-${month + 1}-1`; // Ngày đầu tiên của tháng
 
-  // Thêm khoảng trống trước ngày 1 để lịch đúng thứ
-  for (let i = 0; i < (firstDayIndex === 0 ? 6 : firstDayIndex); i++) {
-    datesContainer.innerHTML += `<div class="empty"></div>`;
+  monthYear.innerText = `${year} - Tháng ${month + 1}`;
+  datesContainer.innerHTML = "";
+  datesContainer1.innerHTML = "";
+  datesContainer2.innerHTML = "";
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const lastDate = new Date(year, month + 1, 0).getDate();
+
+  for (let i = 0; i < firstDay; i++) {
+    datesContainer.innerHTML += `<div></div>`;
+    datesContainer1.innerHTML += `<div></div>`;
+    datesContainer2.innerHTML += `<div></div>`;
   }
 
-  // Hiển thị ngày trong tháng
   for (let i = 1; i <= lastDate; i++) {
     let dateKey = `${year}-${month + 1}-${i}`;
+
     let className = "date";
 
-    // Nếu đang hiển thị tháng hiện tại, đánh dấu ngày hôm nay
+    let dateElement = document.createElement("div");
+    dateElement.className = className;
+    dateElement.innerText = i;
+    dateElement.onclick = () => toggleDate(dateElement, dateKey);
+    datesContainer.appendChild(dateElement);
+
+    let dateElement1 = document.createElement("div");
+    dateElement1.className = className;
+    dateElement1.innerText = i;
+    dateElement1.onclick = () => removeDate(dateElement1, dateKey);
+    datesContainer1.appendChild(dateElement1);
+
     if (year === todayYear && month === todayMonth && dateKey === todayStr) {
       className += " check";
       selectedDate2 = dateKey;
@@ -322,17 +254,22 @@ function renderCalendar2() {
       }
     }
 
-    let dateElement = document.createElement("div");
-    dateElement.className = className;
-    dateElement.innerText = i;
-    dateElement.onclick = () => checkDate(dateElement, dateKey);
-
-    datesContainer.appendChild(dateElement);
+    let dateElement2 = document.createElement("div");
+    dateElement2.className = className;
+    dateElement2.innerText = i;
+    dateElement2.onclick = () => checkDate(dateElement2, dateKey);
+    datesContainer2.appendChild(dateElement2);
   }
+
 
   // Kiểm tra ngày tồn tại xong thì kích hoạt lại lịch
   checkExistingDates1().then(() => {
-    datesContainer.classList.remove("disabled");
+    calendar.classList.remove("disabled-calendar");
+    spinner_calendar.classList.remove("spinner-calendar");
+    calendar_loading.classList.remove("calendar-loading");
+    calendar_loading.innerText = "";
+    prevMonthButton.classList.remove("prevAndNext");
+    nextMonthButton.classList.remove("prevAndNext");
   });
 }
 
@@ -376,12 +313,10 @@ function prevMonth() {
   selectedDates2.clear();
   currentDate.setMonth(currentDate.getMonth() - 1);
 
-  setTimeout(() => {}, 10000);
-
+  // setTimeout(() => {
   renderCalendar();
-  renderCalendar1();
-  renderCalendar2();
-  fetchChamCong(1)
+  fetchChamCong(1);
+  // }, 200);
 
 }
 
@@ -391,12 +326,10 @@ function nextMonth() {
   selectedDates2.clear();
   currentDate.setMonth(currentDate.getMonth() + 1);
 
-  setTimeout(() => {
-    renderCalendar();
-    renderCalendar1();
-    renderCalendar2();
-    fetchChamCong(1);
-  }, 888); 
+  // setTimeout(() => {
+  renderCalendar();
+  fetchChamCong(1);
+  // }, 200);
 }
 
 
@@ -488,7 +421,7 @@ async function fetchChamCong(page) {
   if (maNhanVien) url += `&maNhanVien=${maNhanVien}`;
   if (hoTen) url += `&hoTen=${hoTen}`;
   if (tangCa) url += `&tangCa=${tangCa}`;
- 
+
   try {
     let response = await fetch(url, {
       method: "GET",
@@ -502,7 +435,7 @@ async function fetchChamCong(page) {
       // Nếu có lỗi, hiển thị dòng thông báo
       tableBody.innerHTML = `<tr><td colspan="9" style="text-align: center;">Không có dữ liệu chấm công</td></tr>`;
       return;
-    }    const data = await response.json();
+    } const data = await response.json();
 
     totalPages = data.totalPages;
     document.getElementById("pageInfo").innerText = `Trang ${currentPage} / ${totalPages}`;

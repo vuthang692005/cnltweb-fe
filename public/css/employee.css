@@ -129,6 +129,7 @@ header {
 
 .container {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   gap: 20px;
@@ -223,6 +224,11 @@ header {
   flex-shrink: 0; 
 }
 
+.prevAndNext {
+  opacity: 0.2;
+  pointer-events: none;
+}
+
 
 .disabled-calendar {
   opacity: 0.2;
@@ -260,6 +266,7 @@ header {
   height: 40px;
   color: #007bff;
   font-weight: bold;
+  display: block;
 }
 
 
@@ -298,7 +305,10 @@ button:not(:disabled):hover {
   width: 100px;
 }
 
-
+.calendar button {
+  padding: 0.6rem 1rem;
+  margin-top: 20px;
+}
 
 
 
